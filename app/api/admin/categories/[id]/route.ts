@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { SubCategory } from "@prisma/client";
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -50,7 +51,7 @@ export async function PUT(
       slug: category.slug,
       description: category.description,
       productCount: category.products.length,
-      subCategories: category.subCategories.map((sub: { name: string }) => sub.name),
+      subCategories: category.subCategories.map((sub: SubCategory) => sub.name),
       createdAt: category.createdAt,
       updatedAt: category.updatedAt,
     };
