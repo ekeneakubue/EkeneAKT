@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  // Force the standard direct-DB engine. Without this, Prisma 7 may generate the
+  // "ClientEngine" runtime which *requires* either a Driver Adapter or Accelerate URL.
+  engineType = "library"
+}
+
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  avatar    String?
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  address   String?
+  city      String?
+  state     String?
+  country   String?  @default("Nigeria")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  orders    Order[]
+
+  @@map("customers")
+}
+
+model Category {
+  id           String        @id @default(uuid())
+  name         String        @unique
+  slug         String?       @unique // URL-friendly identifier (e.g., "led-bulb")
+  description  String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relations
+  subCategories SubCategory[]
+  products      Product[]
+
+  @@map("categories")
+}
+
+model SubCategory {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String?  // URL-friendly identifier (e.g., "cup-bulb")
+  categoryId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  products  Product[]
+
+  @@unique([categoryId, name]) // Ensure unique subcategory names per category
+  @@map("sub_categories")
+}
+
+model Product {
+  id              String      @id @default(uuid())
+  name            String
+  description     String?
+  price           Float
+  minQuantity     Int         @default(1) // Minimum pieces per carton
+  categoryId      String?
+  subCategoryId   String?
+  // Legacy fields - will be removed after migration
+  categoryOld     String?     @map("category")
+  subCategoryOld  String?     @map("sub_category")
+  image           String?
+  images          Json?       // Array of additional product images (base64 strings)
+  socketType      String?     // Optional socket/bulb base type (e.g., E27, E14, B22, GU10)
+  availableColors String?     // Optional available colors (comma-separated)
+  rating          Float?      @default(0)
+  reviews         Int         @default(0)
+  featured        Boolean     @default(false)
+  inStock         Boolean     @default(true)
+  stockCount      Int?        // Optional stock count
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  category      Category?      @relation(fields: [categoryId], references: [id])
+  subCategory   SubCategory?   @relation(fields: [subCategoryId], references: [id])
+  orderItems    OrderItem[]
+
+  @@map("products")
+}
+
+model Order {
+  id          String   @id @default(uuid())
+  customerId  String
+  status      String   @default("pending") // pending, processing, shipped, delivered, cancelled
+  subtotal    Float
+  shipping    Float    @default(0)
+  tax         Float    @default(0)
+  total       Float
+  shippingAddress String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  customer    Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  orderItems  OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int      // Number of cartons
+  price     Float    // Price per carton at time of order
+  minQuantity Int    // Pieces per carton at time of order
+  total     Float    // Total price for this item (price * minQuantity * quantity)
+  createdAt DateTime @default(now())
+
+  // Relations
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
