@@ -39,7 +39,7 @@ export async function GET() {
       slug: category.slug,
       description: category.description,
       productCount: category.products.length,
-      subCategories: category.subCategories.map((sub) => sub.name),
+      subCategories: category.subCategories.map((sub: any) => sub.name),
       createdAt: category.createdAt,
       updatedAt: category.updatedAt,
     }));
@@ -138,7 +138,7 @@ export async function POST(request: Request) {
       slug: category.slug,
       description: category.description,
       productCount: category.products.length,
-      subCategories: category.subCategories.map((sub) => sub.name),
+      subCategories: category.subCategories.map((sub: any) => sub.name),
       createdAt: category.createdAt,
       updatedAt: category.updatedAt,
     };

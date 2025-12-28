@@ -51,7 +51,7 @@ export async function PUT(
       slug: category.slug,
       description: category.description,
       productCount: category.products.length,
-      subCategories: category.subCategories.map((sub: SubCategory) => sub.name),
+      subCategories: category.subCategories.map((sub: any) => sub.name),
       createdAt: category.createdAt,
       updatedAt: category.updatedAt,
     };
