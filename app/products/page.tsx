@@ -366,7 +366,7 @@ export default function ProductsPage() {
                   </button>
 
                   {/* Category Structure from Database */}
-                  {categoryStructure.map((category) => (
+                  {categoryStructure.map((category: any) => (
                     <div key={category.id} className="border-b border-gray-100 last:border-b-0">
                       <button
                         onClick={() => {
@@ -527,7 +527,7 @@ export default function ProductsPage() {
                         </button>
 
                         {/* Category Structure from Database */}
-                        {categoryStructure.map((category) => (
+                        {categoryStructure.map((category: any) => (
                           <div key={category.id} className="border-b border-gray-100 last:border-b-0">
                             <button
                               onClick={() => {
