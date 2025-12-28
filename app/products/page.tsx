@@ -9,8 +9,8 @@ import { useAuth } from "../../contexts/AuthContext";
 
 // Helper function to format numbers with commas
 const formatPrice = (amount: number): string => {
-  if (isNaN(amount)) return "0.00";
-  return amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  if (isNaN(amount)) return "0";
+  return amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace(/\.00$/, "");
 };
 
 // Category structure type
@@ -45,6 +45,7 @@ type StoreProduct = {
   featured: boolean;
   image?: string | null;
   description?: string | null;
+  profit?: number;
   inStock?: boolean;
 };
 
@@ -83,7 +84,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    
+
     // Fetch categories
     (async () => {
       try {
@@ -116,7 +117,7 @@ export default function ProductsPage() {
         if (!cancelled) setLoading(false);
       }
     })();
-    
+
     return () => {
       cancelled = true;
     };
@@ -136,6 +137,7 @@ export default function ProductsPage() {
       id: product.id,
       name: product.name,
       price: product.price,
+      profit: product.profit || 0,
       minQuantity: product.minQuantity,
       image: product.image ?? undefined,
     });
@@ -152,14 +154,14 @@ export default function ProductsPage() {
   // Helper function to check if selected category/subcategory matches product
   const matchesCategory = (product: StoreProduct, selected: string): boolean => {
     if (!selected || selected === "all") return true;
-    
+
     // Check if selected is a category name
     const category = categoryStructure.find((cat) => cat.name === selected);
     if (category) {
       // Match if product category matches
       return product.category === category.name;
     }
-    
+
     // Check if selected is a subcategory name
     const subcategory = categoryStructure
       .flatMap((cat) => cat.subcategories)
@@ -168,10 +170,10 @@ export default function ProductsPage() {
       // Match if product subCategory matches the selected subcategory name
       return product.subCategory === subcategory.name;
     }
-    
+
     // Direct name match (fallback)
-    return (product.category !== null && product.category !== undefined && product.category === selected) || 
-           (product.subCategory !== null && product.subCategory !== undefined && product.subCategory === selected);
+    return (product.category !== null && product.category !== undefined && product.category === selected) ||
+      (product.subCategory !== null && product.subCategory !== undefined && product.subCategory === selected);
   };
 
   // Filter products based on selections
@@ -263,7 +265,15 @@ export default function ProductsPage() {
 
               {isAuthenticated ? (
                 <div className="hidden md:flex items-center gap-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold transition hover:bg-blue-50 rounded-lg"
+                    title="Go to Dashboard"
+                  >
+                    <Grid3x3 size={18} />
+                    <span>Dashboard</span>
+                  </Link>
+                  <div className="flex items-center gap-2 text-sm text-gray-700 cursor-default">
                     <User size={18} className="text-blue-600" />
                     <span className="font-semibold">{user?.name}</span>
                   </div>
@@ -757,7 +767,7 @@ export default function ProductsPage() {
                         <div className="flex items-end justify-between gap-3">
                           <div>
                             <div className="text-lg font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                              ₦{formatPrice(product.price)}
+                              ₦{formatPrice(product.price + (product.profit || 0))}
                             </div>
                             <div className="text-xs text-gray-500">per unit</div>
                           </div>
@@ -831,7 +841,7 @@ export default function ProductsPage() {
                           <div className="flex items-end justify-between gap-3">
                             <div>
                               <div className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                                ₦{formatPrice(product.price)}
+                                ₦{formatPrice(product.price + (product.profit || 0))}
                               </div>
                               <div className="text-xs text-gray-500">per unit</div>
                             </div>

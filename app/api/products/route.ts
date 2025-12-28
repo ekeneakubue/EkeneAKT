@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     } catch (prismaError) {
       console.error("Error initializing Prisma client:", prismaError);
       return NextResponse.json(
-        { 
+        {
           error: "Database connection failed",
           message: prismaError instanceof Error ? prismaError.message : "Unknown Prisma error"
         },
@@ -61,6 +61,7 @@ export async function GET(request: Request) {
       name: product.name,
       description: product.description,
       price: product.price,
+      profit: product.profit,
       minQuantity: product.minQuantity,
       category: product.category?.name || product.categoryOld || null,
       subCategory: product.subCategory?.name || product.subCategoryOld || null,
@@ -89,9 +90,9 @@ export async function GET(request: Request) {
     console.error("Error fetching public products:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     const errorStack = error instanceof Error ? error.stack : undefined;
-    
+
     return NextResponse.json(
-      { 
+      {
         error: "Failed to fetch products",
         message: errorMessage,
         ...(process.env.NODE_ENV === "development" && { stack: errorStack })

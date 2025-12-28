@@ -6,6 +6,7 @@ export interface CartItem {
   id: string;
   name: string;
   price: number;
+  profit: number; // Added profit field
   quantity: number;
   minQuantity: number;
   image?: string;
@@ -13,12 +14,13 @@ export interface CartItem {
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: { id: string; name: string; price: number; minQuantity: number; image?: string }) => void;
+  addToCart: (product: { id: string; name: string; price: number; profit: number; minQuantity: number; image?: string }) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
+  getTaxAmount: () => number; // Added tax calculation
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -37,6 +39,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           parsed.map((item) => ({
             ...item,
             id: String(item.id),
+            profit: item.profit || 0, // Ensure profit exists for old items
           }))
         );
       } catch (error) {
@@ -50,10 +53,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product: { id: string; name: string; price: number; minQuantity: number; image?: string }) => {
+  const addToCart = (product: { id: string; name: string; price: number; profit: number; minQuantity: number; image?: string }) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
-      
+
       if (existingItem) {
         // If item exists, increase quantity (cartons)
         return prevCart.map((item) =>
@@ -77,7 +80,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeFromCart(productId);
       return;
     }
-    
+
     setCart((prevCart) =>
       prevCart.map((item) =>
         item.id === productId ? { ...item, quantity } : item
@@ -94,8 +97,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const getTotalPrice = () => {
-    // Total price = price per piece * minQuantity per carton * number of cartons
-    return cart.reduce((total, item) => total + (item.price * item.minQuantity * item.quantity), 0);
+    // Total price = (price + profit) per piece * minQuantity per carton * number of cartons
+    return cart.reduce((total, item) => total + ((item.price + item.profit) * item.minQuantity * item.quantity), 0);
+  };
+
+  const getTaxAmount = () => {
+    // Tax is 7.5% of the total profit
+    // Total profit = profit per piece * minQuantity per carton * number of cartons
+    const totalProfit = cart.reduce((total, item) => total + (item.profit * item.minQuantity * item.quantity), 0);
+    return totalProfit * 0.075;
   };
 
   return (
@@ -108,6 +118,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         getTotalItems,
         getTotalPrice,
+        getTaxAmount,
       }}
     >
       {children}

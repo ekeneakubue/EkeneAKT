@@ -57,7 +57,8 @@ export async function PUT(
       reviews,
       featured,
       inStock,
-      stockCount
+      stockCount,
+      profit
     } = body;
 
     // Validation
@@ -74,6 +75,15 @@ export async function PUT(
         { error: "Price must be a valid number greater than or equal to 0" },
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
+    }
+
+    // Profit validation
+    let profitNum: number | undefined = undefined;
+    if (profit !== undefined && profit !== "") {
+      const parsed = parseFloat(profit);
+      if (!isNaN(parsed)) {
+        profitNum = parsed;
+      }
     }
 
     const minQuantityNum = minQuantity ? parseInt(minQuantity) : 1;
@@ -169,6 +179,10 @@ export async function PUT(
       inStock: inStock !== false && inStock !== "false",
       reviews: reviewsNum,
     };
+
+    if (profitNum !== undefined) {
+      productData.profit = profitNum;
+    }
 
     // Only add optional fields if they have values
     if (image?.trim()) {

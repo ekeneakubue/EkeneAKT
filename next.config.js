@@ -5,6 +5,9 @@ const nextConfig = {
     // Must be an absolute path.
     root: __dirname,
   },
+  // Mark bcryptjs as a server-only external package
+  // This tells Next.js/Turbopack not to bundle it, but to resolve it at runtime
+  serverExternalPackages: ["bcryptjs"],
 };
 
 module.exports = nextConfig;

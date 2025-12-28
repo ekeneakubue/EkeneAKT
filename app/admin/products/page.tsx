@@ -26,6 +26,7 @@ interface Product {
   name: string;
   description: string | null;
   price: number;
+  profit: number;
   minQuantity: number;
   category: string;
   subCategory: string | null;
@@ -74,6 +75,7 @@ export default function ProductsPage() {
     name: "",
     description: "",
     price: "",
+    profit: "",
     minQuantity: "1",
     category: "",
     subCategory: "",
@@ -147,6 +149,7 @@ export default function ProductsPage() {
         name: product.name || "",
         description: product.description || "",
         price: product.price?.toString() || "",
+        profit: product.profit?.toString() || "",
         minQuantity: product.minQuantity?.toString() || "1",
         category: product.category || "",
         subCategory: product.subCategory || "",
@@ -173,6 +176,7 @@ export default function ProductsPage() {
         name: "",
         description: "",
         price: "",
+        profit: "",
         minQuantity: "1",
         category: "",
         subCategory: "",
@@ -205,6 +209,7 @@ export default function ProductsPage() {
       name: "",
       description: "",
       price: "",
+      profit: "",
       minQuantity: "1",
       category: "",
       subCategory: "",
@@ -228,7 +233,7 @@ export default function ProductsPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    
+
     // If category changes, reset subcategory
     if (name === "category") {
       setFormData((prev) => ({
@@ -403,7 +408,7 @@ export default function ProductsPage() {
         images: formData.images.length > 0 ? formData.images : undefined,
       };
 
-      const url = editingProduct 
+      const url = editingProduct
         ? `/api/admin/products/${editingProduct.id}`
         : "/api/admin/products";
       const method = editingProduct ? "PUT" : "POST";
@@ -432,7 +437,7 @@ export default function ProductsPage() {
         try {
           const data = await response.json();
           console.error("Server error response:", data, "Status:", response.status);
-          
+
           // Handle empty error object
           if (!data || (typeof data === 'object' && Object.keys(data).length === 0)) {
             setError(`Server error: HTTP ${response.status}. Please check the server console for details.`);
@@ -473,11 +478,11 @@ export default function ProductsPage() {
 
   // Get category names for dropdown
   const categoryNames = categories.map((cat) => cat.name);
-  
+
   // Get available subcategories for the selected category
   const selectedCategoryData = categories.find((cat) => cat.name === formData.category);
   const availableSubcategories = selectedCategoryData?.subcategories.map((sub) => sub.name) || [];
-  
+
   // If category has no subcategories, add a "General" option since subcategory is required
   const subcategoryOptions = availableSubcategories.length === 0 && formData.category
     ? ["General"]
@@ -850,8 +855,8 @@ export default function ProductsPage() {
                 />
               </div>
 
-              {/* Price and Min Quantity Row */}
-              <div className="grid grid-cols-2 gap-4">
+              {/* Price, Profit and Min Quantity Row */}
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
                     Price (₦) <span className="text-red-500">*</span>
@@ -872,6 +877,29 @@ export default function ProductsPage() {
                       placeholder="0.00"
                       className="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                       required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="profit" className="block text-sm font-medium text-gray-700 mb-2">
+                    Profit (₦)
+                  </label>
+                  <div className="relative">
+                    <TrendingUp
+                      size={20}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    />
+                    <input
+                      id="profit"
+                      name="profit"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={formData.profit}
+                      onChange={handleInputChange}
+                      placeholder="0.00"
+                      className="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     />
                   </div>
                 </div>
@@ -947,8 +975,8 @@ export default function ProductsPage() {
                     disabled={!formData.category}
                   >
                     <option value="">
-                      {!formData.category 
-                        ? "Please select a category first" 
+                      {!formData.category
+                        ? "Please select a category first"
                         : "Select a sub-category"}
                     </option>
                     {subcategoryOptions.map((subcategory) => (

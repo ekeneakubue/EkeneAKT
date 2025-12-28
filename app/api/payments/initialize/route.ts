@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     } catch (prismaError) {
       console.error("Error initializing Prisma client:", prismaError);
       return NextResponse.json(
-        { 
+        {
           error: "Database connection failed",
           message: prismaError instanceof Error ? prismaError.message : "Unknown Prisma error"
         },
@@ -110,19 +110,20 @@ export async function POST(request: Request) {
     }
 
     // Calculate order totals
-    const subtotal = parseFloat(amount);
-    const tax = subtotal * 0.075; // 7.5% tax
+    // Use provided subtotal and tax, or fallback to calculation (though fallback is flawed for new profit logic, frontend should provide)
+    const orderSubtotal = body.subtotal ? parseFloat(body.subtotal) : parseFloat(amount);
+    const orderTax = body.tax ? parseFloat(body.tax) : 0;
     const shipping = 0; // Free shipping for now
-    const orderTotal = subtotal + tax + shipping;
+    const orderTotal = parseFloat(amount); // Amount from frontend is the Grand Total
 
     // Create order with pending status
     const order = await prisma.order.create({
       data: {
         customerId: customer.id,
         status: "pending",
-        subtotal: subtotal,
+        subtotal: orderSubtotal,
         shipping: shipping,
-        tax: tax,
+        tax: orderTax,
         total: orderTotal,
         shippingAddress: shippingAddress.trim(),
         orderItems: {
@@ -168,7 +169,7 @@ export async function POST(request: Request) {
     if (!paystackResponse.ok) {
       const errorData = await paystackResponse.json();
       console.error("Paystack initialization error:", errorData);
-      
+
       // Update order status to failed
       await prisma.order.update({
         where: { id: order.id },
@@ -210,7 +211,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Error initializing payment:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    
+
     return NextResponse.json(
       {
         error: "Failed to initialize payment",

@@ -34,7 +34,7 @@ declare global {
 
 export default function CartPage() {
   const { isAuthenticated, isLoading, user } = useAuth();
-  const { cart, removeFromCart, updateQuantity, clearCart, getTotalItems, getTotalPrice } = useCart();
+  const { cart, removeFromCart, updateQuantity, clearCart, getTotalItems, getTotalPrice, getTaxAmount } = useCart();
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [productImages, setProductImages] = useState<Record<string, string>>({});
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -110,7 +110,7 @@ export default function CartPage() {
   }
 
   const subtotal = getTotalPrice();
-  const tax = subtotal * 0.075; // 7.5% tax
+  const tax = getTaxAmount(); // Tax based on profit
   const total = subtotal + tax;
 
   const handleQuantityChange = (productId: string, newQuantity: number) => {
@@ -154,7 +154,7 @@ export default function CartPage() {
 
     try {
       const subtotal = getTotalPrice();
-      const tax = subtotal * 0.075;
+      const tax = getTaxAmount();
       const total = subtotal + tax;
 
       // Initialize payment
@@ -169,10 +169,12 @@ export default function CartPage() {
           customerName: user.name,
           shippingAddress: shippingAddress.trim(),
           contactNumber: contactNumber.trim(),
+          subtotal: subtotal,
+          tax: tax,
           cartItems: cart.map((item) => ({
             id: item.id,
             name: item.name,
-            price: item.price,
+            price: item.price + item.profit,
             minQuantity: item.minQuantity,
             quantity: item.quantity,
           })),
@@ -198,7 +200,7 @@ export default function CartPage() {
           (async () => {
             try {
               setIsProcessingPayment(true);
-              
+
               // Verify payment
               const verifyResponse = await fetch(
                 `/api/payments/verify?reference=${response.reference}`
@@ -320,8 +322,8 @@ export default function CartPage() {
             <div>
               <h1 className="text-4xl md:text-5xl font-bold">Shopping Cart</h1>
               <p className="text-xl text-blue-200 mt-2">
-                {cart.length === 0 
-                  ? "Your cart is empty" 
+                {cart.length === 0
+                  ? "Your cart is empty"
                   : `${getTotalItems()} ${getTotalItems() === 1 ? 'carton' : 'cartons'} in your cart`
                 }
               </p>
@@ -411,11 +413,11 @@ export default function CartPage() {
                         <div className="flex-1">
                           <h3 className="text-xl font-bold text-gray-900 mb-2">{item.name}</h3>
                           <p className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                            ₦{formatPrice(item.price)}
+                            ₦{formatPrice(item.price + item.profit)}
                           </p>
                           <p className="text-xs text-gray-600">per unit ({item.minQuantity} pieces)</p>
                           <p className="text-sm text-gray-600 mt-2 font-semibold">
-                            ₦{formatPrice(item.price * item.minQuantity * item.quantity)} total
+                            ₦{formatPrice((item.price + item.profit) * item.minQuantity * item.quantity)} total
                             <span className="text-xs font-normal text-gray-500 ml-2">
                               ({item.quantity} {item.quantity === 1 ? 'carton' : 'cartons'} × {item.minQuantity} pieces)
                             </span>

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Search, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  UserCog, 
-  Mail, 
+import {
+  Search,
+  Plus,
+  Edit,
+  Trash2,
+  UserCog,
+  Mail,
   Shield,
   Calendar,
   X,
@@ -34,6 +34,7 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -52,7 +53,7 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     try {
       const response = await fetch("/api/admin/users");
-      
+
       // Check if response is JSON before parsing
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
@@ -90,17 +91,30 @@ export default function UsersPage() {
     }
   };
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (user?: AdminUser) => {
     setIsModalOpen(true);
     setError("");
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      avatar: "",
-      role: "admin",
-    });
-    setAvatarPreview(null);
+    if (user) {
+      setEditingId(user.id);
+      setFormData({
+        name: user.name,
+        email: user.email,
+        password: "", // Leave blank to keep existing
+        avatar: user.avatar || "",
+        role: user.role,
+      });
+      setAvatarPreview(user.avatar || null);
+    } else {
+      setEditingId(null);
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        avatar: "",
+        role: "admin",
+      });
+      setAvatarPreview(null);
+    }
   };
 
   const handleCloseModal = () => {
@@ -158,21 +172,32 @@ export default function UsersPage() {
     setIsSubmitting(true);
 
     // Validation
-    if (!formData.name.trim() || !formData.email.trim() || !formData.password.trim()) {
+    if (!formData.name.trim() || !formData.email.trim()) {
       setError("Please fill in all required fields");
       setIsSubmitting(false);
       return;
     }
 
-    if (formData.password.length < 6) {
+    // Password validation only for new users
+    if (!editingId && (!formData.password || formData.password.length < 6)) {
+      setError("Password must be at least 6 characters long");
+      setIsSubmitting(false);
+      return;
+    }
+
+    // If editing and password provided, check length
+    if (editingId && formData.password && formData.password.length < 6) {
       setError("Password must be at least 6 characters long");
       setIsSubmitting(false);
       return;
     }
 
     try {
-      const response = await fetch("/api/admin/users", {
-        method: "POST",
+      const url = editingId ? `/api/admin/users/${editingId}` : "/api/admin/users";
+      const method = editingId ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -188,19 +213,23 @@ export default function UsersPage() {
       }
 
       if (response.ok) {
-        const newUser = await response.json();
-        setUsers([newUser, ...users]);
+        const savedUser = await response.json();
+        if (editingId) {
+          setUsers(users.map(u => u.id === editingId ? savedUser : u));
+        } else {
+          setUsers([savedUser, ...users]);
+        }
         handleCloseModal();
       } else {
         try {
           const data = await response.json();
-          setError(data.error || "Failed to create user");
+          setError(data.error || "Failed to save user");
         } catch (parseError) {
-          setError("Failed to create user. Please try again.");
+          setError("Failed to save user. Please try again.");
         }
       }
     } catch (error) {
-      console.error("Error creating user:", error);
+      console.error("Error saving user:", error);
       setError("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -241,7 +270,7 @@ export default function UsersPage() {
           <p className="text-gray-600 mt-1">Manage admin users and permissions</p>
         </div>
         <button
-          onClick={handleOpenModal}
+          onClick={() => handleOpenModal()}
           className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white px-4 py-2 rounded-lg hover:from-blue-700 hover:to-blue-900 transition shadow-md hover:shadow-lg"
         >
           <Plus size={20} />
@@ -328,12 +357,12 @@ export default function UsersPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/admin/users/${user.id}/edit`}
+                        <button
+                          onClick={() => handleOpenModal(user)}
                           className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-lg transition"
                         >
                           <Edit size={18} />
-                        </Link>
+                        </button>
                         <button
                           onClick={() => handleDelete(user.id)}
                           className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition"
@@ -388,8 +417,8 @@ export default function UsersPage() {
                   <UserCog className="text-blue-600" size={24} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Add New User</h2>
-                  <p className="text-sm text-gray-600">Create a new admin user account</p>
+                  <h2 className="text-xl font-bold text-gray-900">{editingId ? "Edit User" : "Add New User"}</h2>
+                  <p className="text-sm text-gray-600">{editingId ? "Update user details" : "Create a new admin user account"}</p>
                 </div>
               </div>
               <button
@@ -507,7 +536,7 @@ export default function UsersPage() {
               {/* Password Field */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Password <span className="text-red-500">*</span>
+                  Password {editingId ? <span className="text-gray-400 font-normal">(Leave blank to keep current)</span> : <span className="text-red-500">*</span>}
                 </label>
                 <div className="relative">
                   <Lock
@@ -522,7 +551,7 @@ export default function UsersPage() {
                     onChange={handleInputChange}
                     placeholder="Enter password (min 6 characters)"
                     className="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                    required
+                    required={!editingId}
                     minLength={6}
                   />
                 </div>
@@ -577,7 +606,7 @@ export default function UsersPage() {
                   ) : (
                     <>
                       <Save size={18} />
-                      <span>Create User</span>
+                      <span>{editingId ? "Update User" : "Create User"}</span>
                     </>
                   )}
                 </button>

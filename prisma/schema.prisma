@@ -81,6 +81,7 @@ model Product {
   name            String
   description     String?
   price           Float
+  profit          Float       @default(0)
   minQuantity     Int         @default(1) // Minimum pieces per carton
   categoryId      String?
   subCategoryId   String?

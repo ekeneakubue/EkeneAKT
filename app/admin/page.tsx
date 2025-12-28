@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Package, 
-  ShoppingBag, 
-  Users, 
-  TrendingUp, 
+import {
+  Package,
+  ShoppingBag,
+  Users,
+  TrendingUp,
   DollarSign,
   Clock,
   CheckCircle,
@@ -18,6 +18,7 @@ interface DashboardStats {
   totalOrders: number;
   totalCustomers: number;
   totalRevenue: number;
+  totalProfit: number;
   pendingOrders: number;
   processingOrders: number;
   shippedOrders: number;
@@ -38,7 +39,7 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       const response = await fetch("/api/admin/dashboard");
-      
+
       // Check if response is JSON before parsing
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
@@ -51,6 +52,7 @@ export default function AdminDashboard() {
           totalOrders: 0,
           totalCustomers: 0,
           totalRevenue: 0,
+          totalProfit: 0,
           pendingOrders: 0,
           processingOrders: 0,
           shippedOrders: 0,
@@ -64,7 +66,7 @@ export default function AdminDashboard() {
       if (response.ok) {
         const data = await response.json();
         setStats(data);
-        
+
         // Check if there's a connection error in the response
         if (data._error) {
           setConnectionError(data._error.hint || data._error.message || "Database connection issue");
@@ -88,6 +90,7 @@ export default function AdminDashboard() {
             totalOrders: 0,
             totalCustomers: 0,
             totalRevenue: 0,
+            totalProfit: 0,
             pendingOrders: 0,
             processingOrders: 0,
             shippedOrders: 0,
@@ -108,6 +111,7 @@ export default function AdminDashboard() {
             totalOrders: 0,
             totalCustomers: 0,
             totalRevenue: 0,
+            totalProfit: 0,
             pendingOrders: 0,
             processingOrders: 0,
             shippedOrders: 0,
@@ -121,7 +125,7 @@ export default function AdminDashboard() {
       // Extract error information safely
       const errorMessage = error?.message || String(error) || "Unknown error";
       const errorName = error?.name || "Error";
-      
+
       console.error("Error fetching dashboard data:", error);
       console.error("Error details:", {
         name: errorName,
@@ -129,13 +133,14 @@ export default function AdminDashboard() {
         stack: error?.stack,
         toString: error?.toString?.(),
       });
-      
+
       // Set empty stats to prevent UI errors
       setStats({
         totalProducts: 0,
         totalOrders: 0,
         totalCustomers: 0,
         totalRevenue: 0,
+        totalProfit: 0,
         pendingOrders: 0,
         processingOrders: 0,
         shippedOrders: 0,
@@ -201,6 +206,14 @@ export default function AdminDashboard() {
       bgColor: "bg-amber-50",
       textColor: "text-amber-700",
     },
+    {
+      title: "Total Profit",
+      value: formatPrice(stats?.totalProfit || 0),
+      icon: TrendingUp,
+      color: "bg-emerald-500",
+      bgColor: "bg-emerald-50",
+      textColor: "text-emerald-700",
+    },
   ];
 
   const orderStatusCards = [
@@ -251,7 +264,7 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
-      
+
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-6 text-white shadow-lg">
         <h1 className="text-2xl font-bold mb-2">Welcome to Admin Dashboard</h1>
@@ -321,17 +334,16 @@ export default function AdminDashboard() {
                     <div className="text-right">
                       <p className="font-bold text-gray-900">{formatPrice(order.total)}</p>
                       <span
-                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                          order.status === "pending"
+                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${order.status === "pending"
                             ? "bg-yellow-100 text-yellow-800"
                             : order.status === "processing"
-                            ? "bg-blue-100 text-blue-800"
-                            : order.status === "shipped"
-                            ? "bg-purple-100 text-purple-800"
-                            : order.status === "delivered"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
+                              ? "bg-blue-100 text-blue-800"
+                              : order.status === "shipped"
+                                ? "bg-purple-100 text-purple-800"
+                                : order.status === "delivered"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
+                          }`}
                       >
                         {order.status}
                       </span>

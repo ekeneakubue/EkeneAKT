@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -37,12 +37,41 @@ export default function AdminLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { signOut, user } = useAuth();
+  const { signOut, user, isLoading, isAuthenticated } = useAuth();
 
   const handleSignOut = async () => {
     await signOut();
     router.push("/");
   };
+  // Protect admin routes
+  useEffect(() => {
+    // Skip check for login page
+    if (pathname === "/admin/login") return;
+
+    if (!isLoading && (!isAuthenticated || user?.role !== "admin")) {
+      router.push("/admin/login");
+    }
+  }, [isLoading, isAuthenticated, user, router, pathname]);
+
+  // Handle admin login page specifically to avoid layout issues
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
+
+  if (isLoading || !isAuthenticated || user?.role !== "admin") {
+    if (isLoading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600 font-medium">Loading admin portal...</p>
+          </div>
+        </div>
+      );
+    }
+    // Return null while redirecting
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -95,8 +124,8 @@ export default function AdminLayout({
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive
-                      ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg"
-                      : "text-gray-700 hover:bg-blue-50 hover:text-blue-700"
+                    ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg"
+                    : "text-gray-700 hover:bg-blue-50 hover:text-blue-700"
                     }`}
                 >
                   <item.icon size={20} />

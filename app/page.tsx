@@ -4,16 +4,16 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShoppingCart, Search, Menu, Phone, Mail, MapPin, Star, Truck, Shield, Award, Zap, Home as HomeIcon, Building2, Lightbulb, Lamp, Sparkles, ChevronLeft, ChevronRight, X, LogIn, LogOut, User } from "lucide-react";
+import { ShoppingCart, Search, Menu, Phone, Mail, MapPin, Star, Truck, Shield, Award, Zap, Home as HomeIcon, Building2, Lightbulb, Lamp, Sparkles, ChevronLeft, ChevronRight, X, LogIn, LogOut, User, Grid3x3, ShieldCheck } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
 import { useAuth } from "../contexts/AuthContext";
 
 // Helper function to format numbers with commas
 const formatPrice = (amount: number | string | undefined): string => {
-  if (amount === undefined) return "0.00";
+  if (amount === undefined) return "0";
   const num = typeof amount === "string" ? parseFloat(amount.replace("₦", "").replace(/,/g, "")) : amount;
-  if (isNaN(num)) return "0.00";
-  return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  if (isNaN(num)) return "0";
+  return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace(/\.00$/, "");
 };
 
 export default function Home() {
@@ -126,7 +126,7 @@ export default function Home() {
   // Auto-play slider
   useEffect(() => {
     if (!isAutoPlaying) return;
-    
+
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 5000); // Change slide every 5 seconds
@@ -158,14 +158,14 @@ export default function Home() {
       router.push("/signin");
       return;
     }
-    
+
     addToCart({
       id: product.id,
       name: product.name,
       price: product.price,
       minQuantity: product.minQuantity,
     });
-    
+
     setToastMessage(`${product.name} added to cart!`);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
@@ -193,7 +193,7 @@ export default function Home() {
             </div>
             <div className="text-xs md:text-sm flex items-center gap-2">
               <Sparkles size={14} className="text-amber-400" />
-              <span className="font-medium">Free Shipping on Orders Over ₦200!</span>
+              <span className="font-medium">We Offer Fast and Reliable Shipping!</span>
             </div>
           </div>
         </div>
@@ -263,12 +263,22 @@ export default function Home() {
                   </span>
                 </Link>
               )}
-              
+
               {isAuthenticated ? (
                 <div className="hidden lg:flex items-center gap-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
-                    <User size={18} className="text-blue-600" />
-                    <span className="font-semibold">{user?.name}</span>
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold transition hover:bg-blue-50 rounded-lg"
+                    title="Go to Dashboard"
+                  >
+                    <Grid3x3 size={18} />
+                    <span>Dashboard</span>
+                  </Link>
+                  <div
+                    className="flex items-center gap-2 px-4 py-2 text-gray-700 font-semibold hover:bg-blue-50 rounded-lg cursor-default"
+                  >
+                    <User size={18} />
+                    <span>{user?.name}</span>
                   </div>
                   <button
                     onClick={signOut}
@@ -288,8 +298,8 @@ export default function Home() {
                   <span>Sign In</span>
                 </Link>
               )}
-              
-              <button 
+
+              <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="lg:hidden p-2 hover:bg-amber-50 rounded-lg transition"
                 aria-label="Toggle menu"
@@ -304,33 +314,32 @@ export default function Home() {
           </div>
 
           {/* Mobile Navigation Menu */}
-          <div className={`lg:hidden mt-4 pb-4 border-t border-blue-100 overflow-hidden transition-all duration-300 ease-in-out ${
-            isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          }`}>
+          <div className={`lg:hidden mt-4 pb-4 border-t border-blue-100 overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            }`}>
             <div className="flex flex-col gap-2 pt-4">
-              <a 
-                href="/products" 
+              <a
+                href="/products"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-gray-700 hover:text-amber-600 font-semibold transition py-3 px-4 rounded-lg hover:bg-amber-50 active:bg-amber-100"
               >
                 Products
               </a>
-              <a 
-                href="#categories" 
+              <a
+                href="#categories"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-gray-700 hover:text-amber-600 font-semibold transition py-3 px-4 rounded-lg hover:bg-amber-50 active:bg-amber-100"
               >
                 Categories
               </a>
-              <a 
-                href="#about" 
+              <a
+                href="#about"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-gray-700 hover:text-amber-600 font-semibold transition py-3 px-4 rounded-lg hover:bg-amber-50 active:bg-amber-100"
               >
                 About
               </a>
-              <a 
-                href="#contact" 
+              <a
+                href="#contact"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-gray-700 hover:text-amber-600 font-semibold transition py-3 px-4 rounded-lg hover:bg-amber-50 active:bg-amber-100"
               >
@@ -338,10 +347,14 @@ export default function Home() {
               </a>
               {isAuthenticated ? (
                 <>
-                  <div className="flex items-center gap-2 py-3 px-4 text-gray-700">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-2 py-3 px-4 text-gray-700 hover:text-blue-600 font-semibold transition rounded-lg hover:bg-blue-50 active:bg-blue-100"
+                  >
                     <User size={18} className="text-blue-600" />
-                    <span className="font-semibold">{user?.name}</span>
-                  </div>
+                    <span>{user?.name}</span>
+                  </Link>
                   <button
                     onClick={() => {
                       signOut();
@@ -383,20 +396,16 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 py-12 md:py-16 lg:py-20 px-4 md:px-8 lg:px-12 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 h-[80vh] px-4 md:px-8 lg:px-12 overflow-hidden flex items-center">
         {/* Decorative elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 right-0 w-96 h-96 bg-amber-400 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-400 rounded-full blur-3xl"></div>
         </div>
-        
+
         <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-center py-20">
             <div className="space-y-6 text-white">
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-amber-500/50">
-                <Sparkles size={16} />
-                <span>New Collection 2025</span>
-              </div>
               <h1 className="text-5xl md:text-7xl font-bold leading-tight">
                 Illuminate Your
                 <span className="block bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-transparent">
@@ -434,7 +443,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="relative">
+            <div className="relative h-[70vh]">
               <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-amber-600 rounded-3xl transform rotate-6 opacity-20 blur-xl"></div>
               <div className="relative bg-gradient-to-br from-blue-800/40 to-blue-900/40 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-amber-400/20">
                 <div className="aspect-square bg-gradient-to-br from-amber-50/10 to-blue-50/10 rounded-2xl relative overflow-hidden group">
@@ -443,13 +452,12 @@ export default function Home() {
                     {heroSlides.map((slide, index) => (
                       <div
                         key={slide.id}
-                        className={`absolute inset-0 transition-opacity duration-700 ${
-                          index === currentSlide ? "opacity-100" : "opacity-0"
-                        }`}
+                        className={`absolute inset-0 transition-opacity duration-700 ${index === currentSlide ? "opacity-100" : "opacity-0"
+                          }`}
                       >
-                        <img 
-                          src={slide.image} 
-                          alt={slide.alt} 
+                        <img
+                          src={slide.image}
+                          alt={slide.alt}
                           className="w-full h-full object-cover rounded-2xl"
                         />
                       </div>
@@ -478,11 +486,10 @@ export default function Home() {
                       <button
                         key={index}
                         onClick={() => goToSlide(index)}
-                        className={`transition-all duration-300 rounded-full ${
-                          index === currentSlide
-                            ? "bg-amber-500 w-8 h-3"
-                            : "bg-white/60 hover:bg-white/90 w-3 h-3"
-                        }`}
+                        className={`transition-all duration-300 rounded-full ${index === currentSlide
+                          ? "bg-amber-500 w-8 h-3"
+                          : "bg-white/60 hover:bg-white/90 w-3 h-3"
+                          }`}
                         aria-label={`Go to slide ${index + 1}`}
                       />
                     ))}
@@ -562,7 +569,7 @@ export default function Home() {
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Shop by Category</h2>
             <p className="text-xl text-gray-600">Find the perfect lighting for every space</p>
           </div>
-          
+
           {categoriesLoading ? (
             <div className="text-center py-12">
               <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -577,7 +584,7 @@ export default function Home() {
               {/* Gradient overlays for smooth fade effect */}
               <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-slate-50 via-blue-50 to-transparent z-10 pointer-events-none"></div>
               <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-slate-50 via-blue-50 to-transparent z-10 pointer-events-none"></div>
-              
+
               {/* Marquee Container */}
               <div className="overflow-x-hidden">
                 <div className="flex animate-marquee space-x-6">
@@ -594,7 +601,7 @@ export default function Home() {
                       "from-indigo-600 to-indigo-800",
                     ];
                     const colorClass = colors[index % colors.length];
-                    
+
                     return (
                       <Link
                         key={`first-${category.id}`}
@@ -629,7 +636,7 @@ export default function Home() {
                       "from-indigo-600 to-indigo-800",
                     ];
                     const colorClass = colors[index % colors.length];
-                    
+
                     return (
                       <Link
                         key={`second-${category.id}`}
@@ -680,62 +687,62 @@ export default function Home() {
               </div>
             ) : (
               featuredProducts.map((product) => (
-              <div key={product.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-amber-300">
-                <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-amber-50 aspect-square flex items-center justify-center overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-amber-400/10 group-hover:scale-110 transition-transform duration-500"></div>
-                  {product.image ? (
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      unoptimized
-                      className="object-cover relative z-10"
-                    />
-                  ) : (
-                    <Lightbulb
-                      size={120}
-                      className="text-blue-400 group-hover:text-amber-500 transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_30px_rgba(251,191,36,0.5)] relative z-10"
-                      strokeWidth={1.5}
-                    />
-                  )}
-                  <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-500 to-amber-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg shadow-amber-500/50">
-                    NEW
-                  </div>
-                </div>
-                <div className="p-6 bg-gradient-to-br from-white to-blue-50/30">
-                  <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-blue-800 transition">{product.name}</h3>
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={16}
-                          className={i < Math.floor(product.rating ?? 0) ? "fill-amber-400 text-amber-400" : "text-gray-300"}
-                        />
-                      ))}
+                <div key={product.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-amber-300">
+                  <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-amber-50 aspect-square flex items-center justify-center overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-amber-400/10 group-hover:scale-110 transition-transform duration-500"></div>
+                    {product.image ? (
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        unoptimized
+                        className="object-cover relative z-10"
+                      />
+                    ) : (
+                      <Lightbulb
+                        size={120}
+                        className="text-blue-400 group-hover:text-amber-500 transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_30px_rgba(251,191,36,0.5)] relative z-10"
+                        strokeWidth={1.5}
+                      />
+                    )}
+                    <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-500 to-amber-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg shadow-amber-500/50">
+                      NEW
                     </div>
-                    <span className="text-sm text-gray-600 font-medium">({product.reviews})</span>
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">₦{formatPrice(product.price)}</div>
-                        <div className="text-xs text-gray-600 font-medium">per unit</div>
+                  <div className="p-6 bg-gradient-to-br from-white to-blue-50/30">
+                    <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-blue-800 transition">{product.name}</h3>
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={16}
+                            className={i < Math.floor(product.rating ?? 0) ? "fill-amber-400 text-amber-400" : "text-gray-300"}
+                          />
+                        ))}
                       </div>
-                      <button 
-                        onClick={() => handleViewDetails(product)}
-                        className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-5 py-2.5 rounded-xl hover:from-amber-500 hover:to-amber-600 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl hover:scale-105 transform active:scale-95"
-                      >
-                        View Details
-                      </button>
+                      <span className="text-sm text-gray-600 font-medium">({product.reviews})</span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200">
-                      <span className="font-semibold">Min:</span>
-                      <span>{product.minQuantity} pieces/carton</span>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">₦{formatPrice(product.price + (product.profit || 0))}</div>
+                          <div className="text-xs text-gray-600 font-medium">per unit</div>
+                        </div>
+                        <button
+                          onClick={() => handleViewDetails(product)}
+                          className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-5 py-2.5 rounded-xl hover:from-amber-500 hover:to-amber-600 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl hover:scale-105 transform active:scale-95"
+                        >
+                          View Details
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200">
+                        <span className="font-semibold">Min:</span>
+                        <span>{product.minQuantity} pieces/carton</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
               ))
             )}
           </div>
@@ -754,7 +761,7 @@ export default function Home() {
           <div className="absolute top-1/2 left-0 w-96 h-96 bg-amber-400 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-400 rounded-full blur-3xl"></div>
         </div>
-        
+
         <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/20 to-amber-600/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border-2 border-amber-400/30">
@@ -801,7 +808,7 @@ export default function Home() {
             {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-amber-200 rounded-full blur-3xl opacity-20"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-200 rounded-full blur-3xl opacity-20"></div>
-            
+
             <div className="relative z-10">
               <div className="bg-gradient-to-br from-amber-500 to-amber-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-amber-500/40">
                 <Mail size={36} className="text-white" />
@@ -834,7 +841,7 @@ export default function Home() {
       <footer id="contact" className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-gray-300 py-12 md:py-14 lg:py-16 px-4 md:px-8 lg:px-12 relative overflow-hidden">
         {/* Decorative golden line at top */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
-        
+
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             {/* Company Info */}
@@ -903,6 +910,15 @@ export default function Home() {
                 <li className="flex items-center gap-3 group">
                   <Mail size={20} className="text-amber-500 flex-shrink-0 group-hover:scale-110 transition-transform" />
                   <span className="group-hover:text-amber-100 transition">info@aktlighting.com</span>
+                </li>
+                <li className="pt-2">
+                  <Link
+                    href="/admin"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-sm font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-300 border border-slate-700 hover:border-slate-600"
+                  >
+                    <ShieldCheck size={16} />
+                    <span>Admin Access</span>
+                  </Link>
                 </li>
               </ul>
             </div>

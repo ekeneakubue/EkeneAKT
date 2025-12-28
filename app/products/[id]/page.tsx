@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { 
-  ShoppingCart, 
-  ArrowLeft, 
+import {
+  ShoppingCart,
+  ArrowLeft,
   Lightbulb,
   X,
   Package,
@@ -25,6 +25,7 @@ type ProductDetails = {
   id: string;
   name: string;
   description: string | null;
+  profit?: number;
   price: number;
   minQuantity: number;
   category: string;
@@ -43,20 +44,20 @@ export default function ProductDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const productId = params?.id as string;
-  
+
   const [product, setProduct] = useState<ProductDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  
+
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!productId) return;
-    
+
     let cancelled = false;
     (async () => {
       try {
@@ -65,16 +66,16 @@ export default function ProductDetailsPage() {
         const res = await fetch(`/api/products/${productId}`, {
           headers: { Accept: "application/json" },
         });
-        
+
         if (!res.ok) {
           if (res.status === 404) {
             throw new Error("Product not found");
           }
           throw new Error(`Failed to load product (${res.status})`);
         }
-        
+
         const data = (await res.json()) as ProductDetails;
-        
+
         // Parse images if it's a JSON string
         if (data.images && typeof data.images === 'string') {
           try {
@@ -83,7 +84,7 @@ export default function ProductDetailsPage() {
             data.images = null;
           }
         }
-        
+
         if (!cancelled) {
           setProduct(data);
           const allImages = [data.image, ...(data.images || [])].filter(Boolean);
@@ -102,7 +103,7 @@ export default function ProductDetailsPage() {
         }
       }
     })();
-    
+
     return () => {
       cancelled = true;
     };
@@ -110,7 +111,7 @@ export default function ProductDetailsPage() {
 
   const handleAddToCart = () => {
     if (!product) return;
-    
+
     if (!isAuthenticated) {
       setToastMessage("Please sign in to add items to cart");
       setShowToast(true);
@@ -123,10 +124,11 @@ export default function ProductDetailsPage() {
       id: product.id,
       name: product.name,
       price: product.price,
+      profit: product.profit || 0,
       minQuantity: product.minQuantity,
       image: product.image ?? undefined,
     });
-    
+
     setToastMessage(`${product.name} added to cart!`);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
@@ -289,7 +291,7 @@ export default function ProductDetailsPage() {
 
               {/* Price */}
               <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                ₦{formatPrice(product.price)}
+                ₦{formatPrice(product.price + (product.profit || 0))}
                 <span className="text-lg text-gray-600 font-normal ml-2">per unit</span>
               </div>
 
@@ -319,7 +321,7 @@ export default function ProductDetailsPage() {
                       <li className="flex items-start gap-2">
                         <span className="text-blue-600 font-bold">•</span>
                         <span>Standard delivery: 1-5 business days</span>
-                      </li>                     
+                      </li>
                       <li className="flex items-start gap-2">
                         <span className="text-blue-600 font-bold">•</span>
                         <span>Minimum order: {product.minQuantity}</span>
@@ -339,7 +341,7 @@ export default function ProductDetailsPage() {
                   <ShoppingCart size={24} />
                   <span>Add to Cart</span>
                 </button>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <Link
                     href="/products"
@@ -348,7 +350,7 @@ export default function ProductDetailsPage() {
                     <ArrowLeft size={20} />
                     <span>Continue Shopping</span>
                   </Link>
-                  
+
                   <Link
                     href="/cart"
                     className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white px-6 py-4 rounded-xl hover:from-amber-600 hover:to-amber-700 transition-all duration-300 font-bold shadow-lg hover:shadow-xl flex items-center justify-center gap-2"

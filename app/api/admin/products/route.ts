@@ -17,7 +17,7 @@ export async function GET() {
     } catch (prismaError) {
       console.error("Error initializing Prisma client:", prismaError);
       return NextResponse.json(
-        { 
+        {
           error: "Database connection failed",
           message: prismaError instanceof Error ? prismaError.message : "Unknown Prisma error"
         },
@@ -47,9 +47,9 @@ export async function GET() {
     console.error("Error fetching products:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     const errorStack = error instanceof Error ? error.stack : undefined;
-    
+
     return NextResponse.json(
-      { 
+      {
         error: "Failed to fetch products",
         message: errorMessage,
         ...(process.env.NODE_ENV === "development" && { stack: errorStack })
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
     } catch (prismaError) {
       console.error("Error initializing Prisma client:", prismaError);
       return NextResponse.json(
-        { 
+        {
           error: "Database connection failed",
           message: prismaError instanceof Error ? prismaError.message : "Unknown Prisma error"
         },
@@ -105,7 +105,8 @@ export async function POST(request: Request) {
       reviews,
       featured,
       inStock,
-      stockCount
+      stockCount,
+      profit
     } = body;
 
     // Validation
@@ -122,6 +123,15 @@ export async function POST(request: Request) {
         { error: "Price must be a valid number greater than or equal to 0" },
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
+    }
+
+    // Profit validation (optional but better to be safe)
+    let profitNum = 0;
+    if (profit !== undefined && profit !== "") {
+      const parsed = parseFloat(profit);
+      if (!isNaN(parsed)) {
+        profitNum = parsed;
+      }
     }
 
     const minQuantityNum = minQuantity ? parseInt(minQuantity) : 1;
@@ -210,6 +220,7 @@ export async function POST(request: Request) {
       name: name.trim(),
       description: description?.trim() || null,
       price: priceNum,
+      profit: profitNum,
       minQuantity: minQuantityNum,
       categoryId: categoryRecord.id,
       subCategoryId: subCategoryRecord.id,

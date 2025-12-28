@@ -6,6 +6,8 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  role?: string;
+  avatar?: string | null;
 }
 
 interface AuthContextType {
@@ -13,6 +15,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<boolean>;
+  signInAdmin: (email: string, password: string) => Promise<boolean>;
   signOut: () => void;
   signUp: (email: string, password: string, name: string) => Promise<boolean>;
 }
@@ -47,64 +50,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   const signIn = async (email: string, password: string): Promise<boolean> => {
-    // Simulate API call - in production, this would call your backend
-    // For demo purposes, we'll accept any email/password combination
-    // In a real app, you'd validate against your database
-    
-    // Simple validation
-    if (!email || !password) {
+    try {
+      const res = await fetch("/api/customers/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, action: "signin" }),
+      });
+
+      if (!res.ok) {
+        return false;
+      }
+
+      const data = await res.json();
+      setUser(data.customer);
+      return true;
+    } catch (error) {
+      console.error("Sign in error:", error);
       return false;
     }
-
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // For demo: accept any valid email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return false;
-    }
-
-    // Create user object
-    const newUser: User = {
-      id: Date.now().toString(),
-      email: email.toLowerCase().trim(),
-      name: email.split("@")[0], // Use email prefix as name
-    };
-
-    setUser(newUser);
-    return true;
   };
 
   const signUp = async (email: string, password: string, name: string): Promise<boolean> => {
-    // Simulate API call - in production, this would call your backend
-    if (!email || !password || !name) {
+    try {
+      const res = await fetch("/api/customers/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, name, action: "signup" }),
+      });
+
+      if (!res.ok) {
+        return false;
+      }
+
+      const data = await res.json();
+      setUser(data.customer);
+      return true;
+    } catch (error) {
+      console.error("Sign up error:", error);
       return false;
     }
+  };
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  const signInAdmin = async (email: string, password: string): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+      if (!res.ok) {
+        return false;
+      }
+
+      const data = await res.json();
+      // Ensure role is present
+      const adminUser = { ...data.user, role: data.user.role || "admin" };
+      setUser(adminUser);
+      return true;
+    } catch (error) {
+      console.error("Admin sign in error:", error);
       return false;
     }
-
-    // Validate password length
-    if (password.length < 6) {
-      return false;
-    }
-
-    // Create user object
-    const newUser: User = {
-      id: Date.now().toString(),
-      email: email.toLowerCase().trim(),
-      name: name.trim(),
-    };
-
-    setUser(newUser);
-    return true;
   };
 
   const signOut = () => {
@@ -118,6 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         isLoading,
         signIn,
+        signInAdmin,
         signOut,
         signUp,
       }}
