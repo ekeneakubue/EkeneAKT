@@ -402,7 +402,7 @@ export default function ProductsPage() {
                       {/* Subcategories */}
                       {category.subcategories.length > 0 && expandedCategories.has(category.id) && (
                         <div className="ml-4 mt-1 space-y-1 pb-2">
-                          {category.subcategories.map((subcategory) => (
+                          {category.subcategories.map((subcategory: any) => (
                             <button
                               key={subcategory.id}
                               onClick={() => setSelectedCategory(subcategory.name)}
@@ -436,7 +436,7 @@ export default function ProductsPage() {
                   Price Range
                 </h3>
                 <div className="space-y-2">
-                  {priceRanges.map((range) => (
+                  {priceRanges.map((range: any) => (
                     <button
                       key={range.id}
                       onClick={() => setSelectedPriceRange(range.id)}
@@ -563,7 +563,7 @@ export default function ProductsPage() {
                             {/* Subcategories */}
                             {category.subcategories.length > 0 && expandedCategories.has(category.id) && (
                               <div className="ml-4 mt-1 space-y-1 pb-2">
-                                {category.subcategories.map((subcategory) => (
+                                {category.subcategories.map((subcategory: any) => (
                                   <button
                                     key={subcategory.id}
                                     onClick={() => setSelectedCategory(subcategory.name)}
@@ -594,7 +594,7 @@ export default function ProductsPage() {
                     <div>
                       <h3 className="text-lg font-bold text-gray-900 mb-4">Price Range</h3>
                       <div className="space-y-2">
-                        {priceRanges.map((range) => (
+                        {priceRanges.map((range: any) => (
                           <button
                             key={range.id}
                             onClick={() => setSelectedPriceRange(range.id)}
@@ -720,7 +720,7 @@ export default function ProductsPage() {
               </div>
             ) : viewMode === "grid" ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6">
-                {sortedProducts.map((product) => (
+                {sortedProducts.map((product: any) => (
                   <div
                     key={product.id}
                     className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-amber-300"
@@ -789,7 +789,7 @@ export default function ProductsPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {sortedProducts.map((product) => (
+                {sortedProducts.map((product: any) => (
                   <div
                     key={product.id}
                     className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-amber-300"

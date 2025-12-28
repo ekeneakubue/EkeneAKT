@@ -56,7 +56,7 @@ export async function GET(request: Request) {
     });
 
     // Transform products to include category and subCategory as strings
-    let transformedProducts = products.map((product) => ({
+    let transformedProducts = products.map((product: any) => ({
       id: product.id,
       name: product.name,
       description: product.description,

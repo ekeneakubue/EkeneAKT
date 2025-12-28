@@ -449,7 +449,7 @@ export default function Home() {
                 <div className="aspect-square bg-gradient-to-br from-amber-50/10 to-blue-50/10 rounded-2xl relative overflow-hidden group">
                   {/* Slider Images */}
                   <div className="relative w-full h-full">
-                    {heroSlides.map((slide, index) => (
+                    {heroSlides.map((slide: any, index: number) => (
                       <div
                         key={slide.id}
                         className={`absolute inset-0 transition-opacity duration-700 ${index === currentSlide ? "opacity-100" : "opacity-0"
@@ -589,7 +589,7 @@ export default function Home() {
               <div className="overflow-x-hidden">
                 <div className="flex animate-marquee space-x-6">
                   {/* First set of categories */}
-                  {categories.map((category, index) => {
+                  {categories.map((category: any, index: number) => {
                     const colors = [
                       "from-blue-600 to-blue-800",
                       "from-blue-700 to-blue-900",
@@ -624,7 +624,7 @@ export default function Home() {
                     );
                   })}
                   {/* Duplicate set for seamless loop */}
-                  {categories.map((category, index) => {
+                  {categories.map((category: any, index: number) => {
                     const colors = [
                       "from-blue-600 to-blue-800",
                       "from-blue-700 to-blue-900",
@@ -686,7 +686,7 @@ export default function Home() {
                 No products yet. Add some in the admin panel to see them here.
               </div>
             ) : (
-              featuredProducts.map((product) => (
+              featuredProducts.map((product: any) => (
                 <div key={product.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-amber-300">
                   <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-amber-50 aspect-square flex items-center justify-center overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-amber-400/10 group-hover:scale-110 transition-transform duration-500"></div>

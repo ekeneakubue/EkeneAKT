@@ -477,11 +477,11 @@ export default function ProductsPage() {
   });
 
   // Get category names for dropdown
-  const categoryNames = categories.map((cat) => cat.name);
+  const categoryNames = categories.map((cat: any) => cat.name);
 
   // Get available subcategories for the selected category
   const selectedCategoryData = categories.find((cat) => cat.name === formData.category);
-  const availableSubcategories = selectedCategoryData?.subcategories.map((sub) => sub.name) || [];
+  const availableSubcategories = selectedCategoryData?.subcategories.map((sub: any) => sub.name) || [];
 
   // If category has no subcategories, add a "General" option since subcategory is required
   const subcategoryOptions = availableSubcategories.length === 0 && formData.category
@@ -539,7 +539,7 @@ export default function ProductsPage() {
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">All Categories</option>
-            {categoryNames.map((categoryName) => (
+            {categoryNames.map((categoryName: any) => (
               <option key={categoryName} value={categoryName}>
                 {categoryName}
               </option>
@@ -587,7 +587,7 @@ export default function ProductsPage() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredProducts.length > 0 ? (
-                filteredProducts.map((product) => (
+                filteredProducts.map((product: any) => (
                   <tr key={product.id} className="hover:bg-gray-50 transition">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
@@ -780,7 +780,7 @@ export default function ProductsPage() {
                   Additional Images (Optional - up to 3)
                 </label>
                 <div className="grid grid-cols-3 gap-4">
-                  {[0, 1, 2].map((index) => (
+                  {[0, 1, 2].map((index: any) => (
                     <div key={index} className="space-y-2">
                       <div className="relative">
                         {subImagePreviews[index] ? (
@@ -946,7 +946,7 @@ export default function ProductsPage() {
                     required
                   >
                     <option value="">Select a category</option>
-                    {categoryNames.map((categoryName) => (
+                    {categoryNames.map((categoryName: any) => (
                       <option key={categoryName} value={categoryName}>
                         {categoryName}
                       </option>
@@ -979,7 +979,7 @@ export default function ProductsPage() {
                         ? "Please select a category first"
                         : "Select a sub-category"}
                     </option>
-                    {subcategoryOptions.map((subcategory) => (
+                    {subcategoryOptions.map((subcategory: any) => (
                       <option key={subcategory} value={subcategory}>
                         {subcategory}
                       </option>

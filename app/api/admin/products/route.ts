@@ -36,7 +36,7 @@ export async function GET() {
     });
 
     // Transform products to include category and subCategory as strings for backward compatibility
-    const transformedProducts = products.map((product) => ({
+    const transformedProducts = products.map((product: any) => ({
       ...product,
       category: product.category?.name || product.categoryOld || null,
       subCategory: product.subCategory?.name || product.subCategoryOld || null,

@@ -241,7 +241,7 @@ export default function DashboardPage() {
       if (response.ok) {
         const data = await response.json();
         setOrders(
-          orders.map((order) => (order.id === orderId ? data.order : order))
+          orders.map((order: any) => (order.id === orderId ? data.order : order))
         );
         setEditingOrderId(null);
         setOrderShippingAddress("");
@@ -520,7 +520,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="space-y-6">
-                  {orders.map((order) => (
+                  {orders.map((order: any) => (
                     <div
                       key={order.id}
                       className="border-2 border-gray-200 rounded-xl p-6 hover:border-blue-300 transition"
@@ -604,17 +604,17 @@ export default function DashboardPage() {
                                 </p>
                                 {(order.status === "pending" ||
                                   order.status === "processing") && (
-                                  <button
-                                    onClick={() => {
-                                      setEditingOrderId(order.id);
-                                      setOrderShippingAddress(order.shippingAddress || "");
-                                    }}
-                                    className="ml-2 p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                                    title="Edit Shipping Address"
-                                  >
-                                    <Edit2 size={16} />
-                                  </button>
-                                )}
+                                    <button
+                                      onClick={() => {
+                                        setEditingOrderId(order.id);
+                                        setOrderShippingAddress(order.shippingAddress || "");
+                                      }}
+                                      className="ml-2 p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                                      title="Edit Shipping Address"
+                                    >
+                                      <Edit2 size={16} />
+                                    </button>
+                                  )}
                               </div>
                             )}
                           </div>
@@ -624,7 +624,7 @@ export default function DashboardPage() {
                       <div className="border-t border-gray-200 pt-4">
                         <h4 className="text-sm font-semibold text-gray-700 mb-2">Items</h4>
                         <div className="space-y-2">
-                          {order.orderItems.map((item) => (
+                          {order.orderItems.map((item: any) => (
                             <div
                               key={item.id}
                               className="flex items-center gap-3 bg-gray-50 rounded-lg p-3"

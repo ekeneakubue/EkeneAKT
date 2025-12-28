@@ -28,11 +28,11 @@ export async function GET() {
     });
 
     // Transform categories to match the expected format
-    const transformedCategories = categories.map((category) => ({
+    const transformedCategories = categories.map((category: any) => ({
       id: category.slug || category.name.toLowerCase().replace(/\s+/g, '-'),
       name: category.name.toUpperCase(),
       count: category.products.length,
-      subcategories: category.subCategories.map((sub) => ({
+      subcategories: category.subCategories.map((sub: any) => ({
         id: sub.slug || sub.name.toLowerCase().replace(/\s+/g, '-'),
         name: sub.name,
         count: sub.products.length,

@@ -380,7 +380,7 @@ export default function CartPage() {
 
               {/* Cart Items List */}
               <div className="space-y-4">
-                {cart.map((item) => (
+                {cart.map((item: any) => (
                   <div
                     key={item.id}
                     className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-2 border-gray-100 hover:border-amber-300 transition-all duration-300"

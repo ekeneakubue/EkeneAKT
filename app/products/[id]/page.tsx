@@ -248,7 +248,7 @@ export default function ProductDetailsPage() {
               {/* Sub Images (3 max) */}
               {subImages.length > 0 && (
                 <div className="grid grid-cols-3 gap-4">
-                  {subImages.map((img, idx) => {
+                  {subImages.map((img: any, idx: number) => {
                     // Find the original index in allImages
                     const originalIdx = allImages.findIndex((i) => i === img);
                     return (

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Search, 
-  Eye, 
-  Package, 
+import {
+  Search,
+  Eye,
+  Package,
   Clock,
   CheckCircle,
   XCircle,
@@ -189,7 +189,7 @@ export default function OrdersPage() {
       {/* Orders List */}
       <div className="space-y-4">
         {filteredOrders.length > 0 ? (
-          filteredOrders.map((order) => (
+          filteredOrders.map((order: any) => (
             <div
               key={order.id}
               className="bg-white rounded-xl shadow-md border border-gray-100 p-6 hover:shadow-lg transition"
@@ -263,7 +263,7 @@ export default function OrdersPage() {
               {/* Order Items Preview */}
               <div className="mt-4 pt-4 border-t border-gray-200">
                 <div className="flex flex-wrap gap-2">
-                  {order.orderItems.slice(0, 3).map((item) => (
+                  {order.orderItems.slice(0, 3).map((item: any) => (
                     <div
                       key={item.id}
                       className="flex items-center gap-2 bg-gray-50 rounded-lg p-2"
