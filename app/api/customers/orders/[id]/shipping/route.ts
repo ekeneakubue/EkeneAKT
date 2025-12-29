@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 
 // Lazy load Prisma to avoid Turbopack compilation issues
 async function getPrisma() {
-  const { prisma } = await import("../../../../../lib/prisma");
+  const { prisma } = await import("../../../../../../lib/prisma");
   return prisma;
 }
 
