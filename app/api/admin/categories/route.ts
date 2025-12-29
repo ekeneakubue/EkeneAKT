@@ -33,7 +33,7 @@ export async function GET() {
     });
 
     // Transform categories to include product count and subcategory names
-    const transformedCategories = categories.map((category) => ({
+    const transformedCategories = categories.map((category: any) => ({
       id: category.id,
       name: category.name,
       slug: category.slug,
