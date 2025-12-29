@@ -1,16 +1,11 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
-  // Force the standard direct-DB engine. Without this, Prisma 7 may generate the
-  // "ClientEngine" runtime which *requires* either a Driver Adapter or Accelerate URL.
+  provider   = "prisma-client-js"
   engineType = "library"
 }
 
-// prisma/schema.prisma
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -48,7 +43,7 @@ model Customer {
 model Category {
   id           String        @id @default(uuid())
   name         String        @unique
-  slug         String?       @unique // URL-friendly identifier (e.g., "led-bulb")
+  slug         String?       @unique
   description  String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -63,7 +58,7 @@ model Category {
 model SubCategory {
   id          String   @id @default(uuid())
   name        String
-  slug        String?  // URL-friendly identifier (e.g., "cup-bulb")
+  slug        String?
   categoryId  String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -72,7 +67,7 @@ model SubCategory {
   category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   products  Product[]
 
-  @@unique([categoryId, name]) // Ensure unique subcategory names per category
+  @@unique([categoryId, name])
   @@map("sub_categories")
 }
 
@@ -82,21 +77,20 @@ model Product {
   description     String?
   price           Float
   profit          Float       @default(0)
-  minQuantity     Int         @default(1) // Minimum pieces per carton
+  minQuantity     Int         @default(1)
   categoryId      String?
   subCategoryId   String?
-  // Legacy fields - will be removed after migration
   categoryOld     String?     @map("category")
   subCategoryOld  String?     @map("sub_category")
   image           String?
-  images          Json?       // Array of additional product images (base64 strings)
-  socketType      String?     // Optional socket/bulb base type (e.g., E27, E14, B22, GU10)
-  availableColors String?     // Optional available colors (comma-separated)
+  images          Json?
+  socketType      String?
+  availableColors String?
   rating          Float?      @default(0)
   reviews         Int         @default(0)
   featured        Boolean     @default(false)
   inStock         Boolean     @default(true)
-  stockCount      Int?        // Optional stock count
+  stockCount      Int?
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 
@@ -111,7 +105,7 @@ model Product {
 model Order {
   id          String   @id @default(uuid())
   customerId  String
-  status      String   @default("pending") // pending, processing, shipped, delivered, cancelled
+  status      String   @default("pending")
   subtotal    Float
   shipping    Float    @default(0)
   tax         Float    @default(0)
@@ -131,10 +125,10 @@ model OrderItem {
   id        String   @id @default(uuid())
   orderId   String
   productId String
-  quantity  Int      // Number of cartons
-  price     Float    // Price per carton at time of order
-  minQuantity Int    // Pieces per carton at time of order
-  total     Float    // Total price for this item (price * minQuantity * quantity)
+  quantity  Int
+  price     Float
+  minQuantity Int
+  total     Float
   createdAt DateTime @default(now())
 
   // Relations
@@ -143,4 +137,3 @@ model OrderItem {
 
   @@map("order_items")
 }
-
