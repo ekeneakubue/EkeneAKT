@@ -481,7 +481,7 @@ export default function ProductsPage() {
 
   // Get available subcategories for the selected category
   const selectedCategoryData = categories.find((cat) => cat.name === formData.category);
-  const availableSubcategories = selectedCategoryData?.subcategories.map((sub: any) => sub.name) || [];
+  const availableSubcategories = selectedCategoryData?.subcategories.map((sub: { name: string }) => sub.name) || [];
 
   // If category has no subcategories, add a "General" option since subcategory is required
   const subcategoryOptions = availableSubcategories.length === 0 && formData.category

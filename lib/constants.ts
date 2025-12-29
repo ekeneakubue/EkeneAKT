@@ -125,11 +125,11 @@ export const categoryStructure = [
 // Helper function to get subcategories for a given category name
 export function getSubcategoriesForCategory(categoryName: string) {
   const category = categoryStructure.find((cat) => cat.name === categoryName);
-  return category ? category.subcategories.map((sub) => sub.name) : [];
+  return category ? category.subcategories.map((sub: { name: string }) => sub.name) : [];
 }
 
 // Get all category names
 export function getAllCategoryNames() {
-  return categoryStructure.map((cat) => cat.name);
+  return categoryStructure.map((cat: { name: string }) => cat.name);
 }
 
