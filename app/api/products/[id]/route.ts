@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 
 // Lazy load Prisma to avoid Turbopack compilation issues
 async function getPrisma() {
