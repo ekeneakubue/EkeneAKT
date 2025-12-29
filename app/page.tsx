@@ -35,6 +35,7 @@ export default function Home() {
     reviews: number;
     featured: boolean;
     image?: string | null;
+    profit?: number;
   };
 
   const [featuredProducts, setFeaturedProducts] = useState<StoreProduct[]>([]);
@@ -163,7 +164,9 @@ export default function Home() {
       id: product.id,
       name: product.name,
       price: product.price,
+      profit: product.profit || 0,
       minQuantity: product.minQuantity,
+      image: product.image ?? undefined,
     });
 
     setToastMessage(`${product.name} added to cart!`);
