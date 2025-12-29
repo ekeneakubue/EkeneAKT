@@ -215,7 +215,7 @@ export default function UsersPage() {
       if (response.ok) {
         const savedUser = await response.json();
         if (editingId) {
-          setUsers(users.map(u => u.id === editingId ? savedUser : u));
+          setUsers(users.map((u: any) => u.id === editingId ? savedUser : u));
         } else {
           setUsers([savedUser, ...users]);
         }
