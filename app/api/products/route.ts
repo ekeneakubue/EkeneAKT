@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     let prisma;
     try {
       prisma = await getPrisma();
-    } catch (prismaError) {
+    } catch (prismaError: any) {
       console.error("Error initializing Prisma client:", prismaError);
       return NextResponse.json(
         {
@@ -76,7 +76,7 @@ export async function GET(request: Request) {
     // Apply categoryParam filter after transformation
     if (categoryParam) {
       transformedProducts = transformedProducts.filter(
-        (p) => p.category === categoryParam || p.subCategory === categoryParam
+        (p: any) => p.category === categoryParam || p.subCategory === categoryParam
       );
     }
 
@@ -86,7 +86,7 @@ export async function GET(request: Request) {
         "Cache-Control": "no-store",
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching public products:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     const errorStack = error instanceof Error ? error.stack : undefined;
