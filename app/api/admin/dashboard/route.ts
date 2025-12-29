@@ -94,15 +94,15 @@ export async function GET() {
       orders,
       products,
     ] = await Promise.all([
-      prisma.product.count().catch((err) => {
+      prisma.product.count().catch((err: any) => {
         console.error("Error counting products:", err);
         return 0;
       }),
-      prisma.order.count().catch((err) => {
+      prisma.order.count().catch((err: any) => {
         console.error("Error counting orders:", err);
         return 0;
       }),
-      prisma.customer.count().catch((err) => {
+      prisma.customer.count().catch((err: any) => {
         console.error("Error counting customers:", err);
         return 0;
       }),
@@ -119,7 +119,7 @@ export async function GET() {
           createdAt: "desc",
         },
         take: 10,
-      }).catch((err) => {
+      }).catch((err: any) => {
         console.error("Error fetching orders:", err);
         return [];
       }),
@@ -131,7 +131,7 @@ export async function GET() {
           ],
         },
         take: 10,
-      }).catch((err) => {
+      }).catch((err: any) => {
         console.error("Error fetching low stock products:", err);
         return [];
       }),
@@ -143,7 +143,7 @@ export async function GET() {
         total: true,
         tax: true,
       },
-    }).catch((err) => {
+    }).catch((err: any) => {
       console.error("Error aggregating revenue:", err);
       return { _sum: { total: 0, tax: 0 } };
     });
@@ -156,25 +156,25 @@ export async function GET() {
     // Count orders by status with error handling
     const pendingOrders = await prisma.order.count({
       where: { status: "pending" },
-    }).catch((err) => {
+    }).catch((err: any) => {
       console.error("Error counting pending orders:", err);
       return 0;
     });
     const processingOrders = await prisma.order.count({
       where: { status: "processing" },
-    }).catch((err) => {
+    }).catch((err: any) => {
       console.error("Error counting processing orders:", err);
       return 0;
     });
     const shippedOrders = await prisma.order.count({
       where: { status: "shipped" },
-    }).catch((err) => {
+    }).catch((err: any) => {
       console.error("Error counting shipped orders:", err);
       return 0;
     });
     const deliveredOrders = await prisma.order.count({
       where: { status: "delivered" },
-    }).catch((err) => {
+    }).catch((err: any) => {
       console.error("Error counting delivered orders:", err);
       return 0;
     });
