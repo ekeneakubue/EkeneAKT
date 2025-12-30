@@ -23,12 +23,14 @@ function normalizeDatabaseUrl(raw?: string): string | undefined {
   return unquoted;
 }
 
-const databaseUrl = normalizeDatabaseUrl(process.env.DATABASE_URL);
-if (!databaseUrl) {
+const databaseUrlRaw = normalizeDatabaseUrl(process.env.DATABASE_URL);
+if (!databaseUrlRaw) {
   throw new Error(
     "DATABASE_URL environment variable is required. Please set it (e.g. in .env.local)."
   );
 }
+
+const databaseUrl = databaseUrlRaw as string;
 
 // Keep process.env.DATABASE_URL normalized for Prisma to read.
 process.env.DATABASE_URL = databaseUrl;
