@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 
-export default function PaymentCallbackPage() {
+function PaymentCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
@@ -39,7 +39,7 @@ export default function PaymentCallbackPage() {
         if (data.success) {
           setStatus("success");
           setMessage("Payment verified successfully!");
-          
+
           // Redirect to success page after 2 seconds
           setTimeout(() => {
             router.push(`/payment/success?orderId=${data.orderId}&reference=${reference}`);
@@ -109,6 +109,18 @@ export default function PaymentCallbackPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center">
+        <Loader2 className="animate-spin text-blue-600" size={48} />
+      </div>
+    }>
+      <PaymentCallbackContent />
+    </Suspense>
   );
 }
 
