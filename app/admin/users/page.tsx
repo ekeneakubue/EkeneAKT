@@ -15,7 +15,9 @@ import {
   Lock,
   Save,
   Image as ImageIcon,
-  Upload
+  Upload,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import Link from "next/link";
 
@@ -45,6 +47,7 @@ export default function UsersPage() {
     role: "admin",
   });
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     fetchUsers();

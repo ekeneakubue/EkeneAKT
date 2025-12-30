@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
-import { Mail, Lock, User, ArrowLeft, LogIn, UserPlus } from "lucide-react";
+import { Mail, Lock, User, ArrowLeft, LogIn, UserPlus, Eye, EyeOff } from "lucide-react";
 
 export default function SignInPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -13,6 +13,7 @@ export default function SignInPage() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { signIn, signUp } = useAuth();
   const router = useRouter();
 
@@ -67,7 +68,7 @@ export default function SignInPage() {
                 <img src="/images/logo.jpg" alt="logo" className="w-12 h-12 rounded-full" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">AKT</h1>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">EKENE-AKT</h1>
                 <p className="text-xs font-semibold text-amber-600 tracking-wider">LIGHTING</p>
               </div>
             </div>
@@ -145,14 +146,21 @@ export default function SignInPage() {
                 />
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={isSignUp ? "Create a password (min 6 characters)" : "Enter your password"}
-                  className="w-full pl-10 pr-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
+                  className="w-full pl-10 pr-12 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
                   required
                   minLength={isSignUp ? 6 : undefined}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition p-1"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
 
