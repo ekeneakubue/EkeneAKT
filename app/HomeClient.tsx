@@ -297,14 +297,25 @@ export default function HomeClient() {
                     <h2 className="text-3xl md:text-5xl font-bold mb-4">Shop by Category</h2>
                     <p className="text-gray-600">Find the perfect lighting for every space</p>
                 </div>
-                <div className="flex overflow-x-auto gap-6 px-4 no-scrollbar pb-10">
-                    {categories.map((category) => (
-                        <Link key={category.id} href={`/products?category=${encodeURIComponent(category.name)}`} className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all w-80 shrink-0 border-2 border-transparent hover:border-amber-400">
-                            <div className="bg-blue-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-xl"><Lightbulb size={28} /></div>
-                            <h3 className="text-xl font-bold mb-2">{category.name}</h3>
-                            <p className="text-gray-600">{category.count} Products</p>
-                        </Link>
-                    ))}
+                <div className="relative overflow-hidden group">
+                    <div className="flex animate-marquee gap-6 whitespace-nowrap">
+                        {/* First set of categories */}
+                        {categories.map((category) => (
+                            <Link key={`${category.id}-1`} href={`/products?category=${encodeURIComponent(category.name)}`} className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all w-80 shrink-0 border-2 border-transparent hover:border-amber-400">
+                                <div className="bg-blue-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-xl"><Lightbulb size={28} /></div>
+                                <h3 className="text-xl font-bold mb-2">{category.name}</h3>
+                                <p className="text-gray-600">{category.count} Products</p>
+                            </Link>
+                        ))}
+                        {/* Duplicate set for seamless looping */}
+                        {categories.map((category) => (
+                            <Link key={`${category.id}-2`} href={`/products?category=${encodeURIComponent(category.name)}`} className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all w-80 shrink-0 border-2 border-transparent hover:border-amber-400">
+                                <div className="bg-blue-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-xl"><Lightbulb size={28} /></div>
+                                <h3 className="text-xl font-bold mb-2">{category.name}</h3>
+                                <p className="text-gray-600">{category.count} Products</p>
+                            </Link>
+                        ))}
+                    </div>
                 </div>
             </section>
 
@@ -334,29 +345,179 @@ export default function HomeClient() {
                 </div>
             </section>
 
-            <section className="py-20 px-4 md:px-8 lg:px-12 bg-blue-900 text-white">
-                <div className="container mx-auto text-center max-w-4xl">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-6">Experience Premium Quality</h2>
-                    <p className="text-blue-100 text-lg mb-10">We pride ourselves on delivering only the best lighting solutions, combining innovation with timeless design.</p>
-                    <form onSubmit={handleNewsletterSubscribe} className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
-                        <input type="email" placeholder="Enter your email" value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} className="flex-1 px-6 py-4 rounded-xl text-gray-900 focus:outline-none" required />
-                        <button type="submit" disabled={isSubmittingNewsletter} className="bg-amber-500 text-white px-10 py-4 rounded-xl font-bold hover:bg-amber-600 transition">{isSubmittingNewsletter ? "Subscribing..." : "Subscribe"}</button>
-                    </form>
+            {/* Newsletter */}
+            <section className="py-12 md:py-16 lg:py-20 px-4 md:px-8 lg:px-12 bg-gradient-to-br from-slate-50 via-blue-50 to-amber-50">
+                <div className="container mx-auto px-4 md:px-6 lg:px-8">
+                    <div className="max-w-4xl mx-auto bg-gradient-to-br from-white to-blue-50/50 rounded-2xl md:rounded-3xl shadow-2xl p-6 md:p-10 lg:p-12 text-center border-2 border-amber-200/50 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-200 rounded-full blur-3xl opacity-20"></div>
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-200 rounded-full blur-3xl opacity-20"></div>
+
+                        <div className="relative z-10">
+                            <div className="bg-gradient-to-br from-amber-500 to-amber-600 w-16 h-16 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-xl shadow-amber-500/40">
+                                <Mail size={28} className="text-white md:w-9 md:h-9" />
+                            </div>
+                            <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">
+                                Get <span className="bg-gradient-to-r from-amber-600 to-amber-500 bg-clip-text text-transparent">15% Off</span> Your First Order!
+                            </h2>
+                            <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8">
+                                Subscribe to our newsletter for exclusive deals and lighting inspiration.
+                            </p>
+                            <form onSubmit={handleNewsletterSubscribe} className="flex flex-col sm:flex-row gap-3 md:gap-4 max-w-2xl mx-auto">
+                                <input
+                                    type="email"
+                                    placeholder="Enter your email address"
+                                    value={newsletterEmail}
+                                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                                    disabled={isSubmittingNewsletter}
+                                    className="flex-1 px-5 md:px-6 py-3 md:py-4 border-2 border-blue-200 rounded-lg md:rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition shadow-sm text-sm md:text-base disabled:opacity-50"
+                                    required
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={isSubmittingNewsletter}
+                                    className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-8 md:px-10 py-3 md:py-4 rounded-lg md:rounded-xl font-bold hover:from-amber-500 hover:to-amber-600 transition-all duration-300 whitespace-nowrap shadow-xl hover:shadow-2xl hover:scale-105 transform text-sm md:text-base flex items-center justify-center gap-2 disabled:opacity-50 disabled:hover:scale-100"
+                                >
+                                    {isSubmittingNewsletter ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                            <span>Subscribing...</span>
+                                        </>
+                                    ) : (
+                                        <span>Subscribe Now</span>
+                                    )}
+                                </button>
+                            </form>
+                            <p className="text-xs md:text-sm text-gray-500 mt-4 md:mt-6">
+                                We respect your privacy. Unsubscribe anytime.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <footer id="contact" className="bg-slate-900 text-gray-400 py-16 px-4 md:px-8 lg:px-12">
-                <div className="container mx-auto grid md:grid-cols-4 gap-12">
-                    <div><h3 className="text-white font-bold text-xl mb-6">EKENE-AKT</h3><p className="mb-6 text-gray-500">Illuminate your world with premium lighting solutions designed for modern living.</p></div>
-                    <div><h4 className="text-amber-500 font-bold mb-6">Quick Links</h4><ul className="space-y-4"><li><Link href="/products" className="hover:text-white transition">Products</Link></li><li><a href="#about" className="hover:text-white transition">About Us</a></li><li><a href="#contact" className="hover:text-white transition">Contact</a></li></ul></div>
-                    <div><h4 className="text-amber-500 font-bold mb-6">Contact</h4><p>Alaba International Market, Ojo, Lagos</p><p>+234 803 274 4865</p><p>ekeneakt@gmail.com</p></div>
-                    <div className="flex flex-col gap-6">
-                        <h4 className="text-amber-500 font-bold">Follow Us</h4>
-                        <div className="flex gap-4"><Facebook /><Instagram /><Linkedin /></div>
+            {/* Footer */}
+            <footer id="contact" className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-gray-300 py-12 md:py-14 lg:py-16 px-4 md:px-8 lg:px-12 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
+
+                <div className="container mx-auto px-4 md:px-6 lg:px-8">
+                    <div className="grid md:grid-cols-4 gap-12 mb-12">
+                        <div className="text-center md:text-left">
+                            <div className="flex items-center justify-center md:justify-start gap-2 md:gap-3 mb-6">
+                                <div className="bg-amber-500 p-1 md:p-1.5 rounded-full">
+                                    <img src="/images/logo.jpg" alt="logo" className="w-10 h-10 md:w-15 md:h-15 rounded-full" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg md:text-xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">EKENE-AKT</h3>
+                                    <p className="text-[10px] md:text-xs font-semibold text-amber-500 tracking-wider">LIGHTING</p>
+                                </div>
+                            </div>
+                            <p className="text-sm md:text-base text-gray-400 leading-relaxed mb-6">
+                                Illuminate your world with premium lighting solutions designed for modern living.
+                            </p>
+                            <div className="flex justify-center md:justify-start gap-3">
+                                {[
+                                    { id: 'facebook', icon: Facebook, color: 'bg-gradient-to-br from-blue-600 to-blue-700 shadow-blue-500/20', href: 'https://facebook.com' },
+                                    { id: 'whatsapp', icon: MessageCircle, color: 'bg-gradient-to-br from-green-500 to-green-600 shadow-green-500/20', href: 'https://wa.me/2348032744865' },
+                                    { id: 'instagram', icon: Instagram, color: 'bg-gradient-to-br from-pink-500 via-purple-500 to-amber-500 shadow-purple-500/20', href: 'https://instagram.com' },
+                                    { id: 'linkedin', icon: Linkedin, color: 'bg-gradient-to-br from-blue-700 to-blue-800 shadow-blue-800/20', href: 'https://linkedin.com' }
+                                ].map((social) => (
+                                    <a
+                                        key={social.id}
+                                        href={social.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`w-11 h-11 ${social.color} rounded-xl transition-all duration-300 flex items-center justify-center shadow-lg hover:brightness-110 hover:scale-110 transform text-white border border-white/10`}
+                                    >
+                                        <span className="sr-only">{social.id}</span>
+                                        <social.icon size={20} />
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="text-center md:text-left">
+                            <h4 className="text-amber-400 font-bold mb-4 md:mb-6 text-base md:text-lg">Quick Links</h4>
+                            <ul className="space-y-3">
+                                {['About Us', 'Our Products', 'Contact', 'Blog', 'FAQs', 'Careers'].map((link) => (
+                                    <li key={link}>
+                                        <a href="#" className="hover:text-amber-400 transition-colors duration-200 inline-block hover:translate-x-1 transform text-sm md:text-base">{link}</a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className="text-center md:text-left">
+                            <h4 className="text-amber-400 font-bold mb-4 md:mb-6 text-base md:text-lg">Categories</h4>
+                            <ul className="space-y-3">
+                                {['Home Lighting', 'Commercial', 'LED Solutions', 'Decorative', 'Outdoor', 'Smart Lighting'].map((category) => (
+                                    <li key={category}>
+                                        <a href="#" className="hover:text-amber-400 transition-colors duration-200 inline-block hover:translate-x-1 transform text-sm md:text-base">{category}</a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className="text-center md:text-left">
+                            <h4 className="text-amber-400 font-bold mb-4 md:mb-6 text-base md:text-lg">Contact Us</h4>
+                            <ul className="space-y-4">
+                                <li className="flex items-start justify-center md:justify-start gap-3 group">
+                                    <MapPin size={18} className="text-amber-500 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform md:w-5 md:h-5" />
+                                    <span className="group-hover:text-amber-100 transition text-sm md:text-base">Alaba International Market, Ojo, Lagos State, Nigeria</span>
+                                </li>
+                                <li className="flex items-start justify-center md:justify-start gap-3 group">
+                                    <MapPin size={18} className="text-amber-500 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform md:w-5 md:h-5" />
+                                    <span className="group-hover:text-amber-100 transition text-sm md:text-base">Electrical Main Market, Obosi, Anambra State, Nigeria</span>
+                                </li>
+                                <li className="flex items-center justify-center md:justify-start gap-3 group">
+                                    <Phone size={18} className="text-amber-500 flex-shrink-0 group-hover:scale-110 transition-transform md:w-5 md:h-5" />
+                                    <span className="group-hover:text-amber-100 transition text-sm md:text-base">+234 803 274 4865</span>
+                                </li>
+                                <li className="flex items-center justify-center md:justify-start gap-3 group">
+                                    <Mail size={18} className="text-amber-500 flex-shrink-0 group-hover:scale-110 transition-transform md:w-5 md:h-5" />
+                                    <span className="group-hover:text-amber-100 transition text-sm md:text-base">ekeneaktonline@gmail.com</span>
+                                </li>
+                                <li className="pt-2 flex justify-center md:justify-start">
+                                    <Link
+                                        href="/admin"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs md:text-sm font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-300 border border-slate-700 hover:border-slate-600"
+                                    >
+                                        <ShieldCheck size={16} />
+                                        <span>Admin Access</span>
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p className="text-gray-500 text-sm md:text-base">
+                            © 2025 <span className="text-amber-400 font-semibold">AKT Lighting</span>. All rights reserved.
+                        </p>
+                        <div className="flex gap-6 text-sm md:text-base">
+                            <a href="#" className="hover:text-amber-400 transition">Privacy Policy</a>
+                            <a href="#" className="hover:text-amber-400 transition">Terms of Service</a>
+                            <a href="#" className="hover:text-amber-400 transition">Cookie Policy</a>
+                        </div>
                     </div>
                 </div>
-                <div className="container mx-auto border-t border-slate-800 mt-12 pt-8 text-center"><p>&copy; 2025 AKT Lighting. All rights reserved.</p></div>
             </footer>
+
+            {/* Floating WhatsApp Button */}
+            <a
+                href="https://wa.me/2348032744865"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="fixed bottom-6 right-6 z-50 flex items-center justify-center group"
+                aria-label="Chat with us on WhatsApp"
+            >
+                <div className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-40"></div>
+                <div className="relative bg-gradient-to-br from-[#25D366] to-[#128C7E] text-white p-2 md:p-3 rounded-full shadow-2xl hover:scale-110 hover:rotate-12 transition-all duration-300 flex items-center justify-center border-4 border-white z-10">
+                    <MessageCircle size={20} strokeWidth={3.5} className="drop-shadow-lg" />
+                </div>
+                <span className="absolute right-full mr-4 bg-white text-gray-900 px-4 py-2 rounded-xl text-sm font-bold shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border-2 border-green-100 mb-2">
+                    Chat with us!
+                </span>
+            </a>
 
             {showToast && (
                 <div className="fixed bottom-10 right-10 bg-blue-600 text-white px-8 py-4 rounded-xl shadow-2xl z-50 animate-bounce">
