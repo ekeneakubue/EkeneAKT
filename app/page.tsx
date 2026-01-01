@@ -681,8 +681,9 @@ export default function Home() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {featuredLoading ? (
-              <div className="col-span-full text-center text-gray-600 font-medium">
-                Loading products...
+              <div className="col-span-full text-center py-12">
+                <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600 font-medium tracking-wide">Loading featured products...</p>
               </div>
             ) : featuredProducts.length === 0 ? (
               <div className="col-span-full text-center text-gray-600">
@@ -729,7 +730,7 @@ export default function Home() {
                     <div className="space-y-3 md:space-y-2">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">₦{formatPrice(product.price + (product.profit || 0))}</div>
+                          <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">₦{formatPrice(product.price * 1.075 + (product.profit || 0))}</div>
                           <div className="text-[10px] md:text-xs text-gray-600 font-medium">per unit</div>
                         </div>
                         <button
@@ -964,8 +965,8 @@ export default function Home() {
         {/* Pulsing ring effect */}
         <div className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-40"></div>
 
-        <div className="relative bg-gradient-to-br from-[#25D366] to-[#128C7E] text-white p-4 md:p-5 rounded-full shadow-2xl hover:scale-110 hover:rotate-12 transition-all duration-300 flex items-center justify-center border-4 border-white z-10">
-          <MessageCircle size={36} strokeWidth={2.5} className="drop-shadow-lg" />
+        <div className="relative bg-gradient-to-br from-[#25D366] to-[#128C7E] text-white p-2 md:p-3 rounded-full shadow-2xl hover:scale-110 hover:rotate-12 transition-all duration-300 flex items-center justify-center border-4 border-white z-10">
+          <MessageCircle size={20} strokeWidth={3.5} className="drop-shadow-lg" />
         </div>
 
         <span className="absolute right-full mr-4 bg-white text-gray-900 px-4 py-2 rounded-xl text-sm font-bold shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border-2 border-green-100 mb-2">

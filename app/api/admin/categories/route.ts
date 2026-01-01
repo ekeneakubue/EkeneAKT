@@ -27,9 +27,10 @@ export async function GET() {
         subCategories: true,
         products: true,
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: [
+        { displayOrder: "asc" },
+        { createdAt: "desc" }
+      ],
     });
 
     // Transform categories to include product count and subcategory names
@@ -38,6 +39,7 @@ export async function GET() {
       name: category.name,
       slug: category.slug,
       description: category.description,
+      displayOrder: category.displayOrder,
       productCount: category.products.length,
       subCategories: category.subCategories.map((sub: { name: string }) => sub.name),
       createdAt: category.createdAt,
@@ -73,7 +75,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { name, slug, description, subCategories } = body;
+    const { name, slug, description, displayOrder, subCategories } = body;
 
     // Validation
     if (!name || !name.trim()) {
@@ -118,6 +120,7 @@ export async function POST(request: Request) {
         name: name.trim(),
         slug: categorySlug,
         description: description?.trim() || null,
+        displayOrder: parseInt(displayOrder) || 0,
         subCategories: {
           create: (subCategories || []).map((subName: string) => ({
             name: subName.trim(),
@@ -137,6 +140,7 @@ export async function POST(request: Request) {
       name: category.name,
       slug: category.slug,
       description: category.description,
+      displayOrder: category.displayOrder,
       productCount: category.products.length,
       subCategories: category.subCategories.map((sub: { name: string }) => sub.name),
       createdAt: category.createdAt,

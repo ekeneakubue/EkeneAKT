@@ -8,6 +8,7 @@ interface Category {
     name: string;
     slug?: string | null;
     description?: string | null;
+    displayOrder: number;
     productCount: number;
     subCategories: string[];
     createdAt?: string;
@@ -25,6 +26,7 @@ export default function CategoriesPage() {
     const [categoryName, setCategoryName] = useState("");
     const [categorySlug, setCategorySlug] = useState("");
     const [categoryDescription, setCategoryDescription] = useState("");
+    const [categoryDisplayOrder, setCategoryDisplayOrder] = useState("0");
     const [subCategoriesList, setSubCategoriesList] = useState<string[]>([]);
     const [subCategoryInput, setSubCategoryInput] = useState("");
 
@@ -34,10 +36,10 @@ export default function CategoriesPage() {
 
     const fetchCategories = async () => {
         try {
-            const response = await fetch("/api/admin/categories");
+            const response = await fetch("/api/admin/categories", { cache: 'no-store' });
             if (response.ok) {
                 const categoriesData = await response.json();
-                setCategories(categoriesData.sort((a: Category, b: Category) => a.name.localeCompare(b.name)));
+                setCategories(categoriesData);
             }
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -52,6 +54,7 @@ export default function CategoriesPage() {
             setCategoryName(category.name);
             setCategorySlug(category.slug || "");
             setCategoryDescription(category.description || "");
+            setCategoryDisplayOrder(category.displayOrder?.toString() || "0");
             setSubCategoriesList(category.subCategories || []);
             setSubCategoryInput("");
         } else {
@@ -59,6 +62,7 @@ export default function CategoriesPage() {
             setCategoryName("");
             setCategorySlug("");
             setCategoryDescription("");
+            setCategoryDisplayOrder("0");
             setSubCategoriesList([]);
             setSubCategoryInput("");
         }
@@ -72,6 +76,7 @@ export default function CategoriesPage() {
         setCategoryName("");
         setCategorySlug("");
         setCategoryDescription("");
+        setCategoryDisplayOrder("0");
         setSubCategoriesList([]);
         setSubCategoryInput("");
         setError("");
@@ -128,8 +133,9 @@ export default function CategoriesPage() {
         try {
             const categoryData = {
                 name: categoryName.trim(),
-                slug: categorySlug.trim() || undefined,
-                description: categoryDescription.trim() || undefined,
+                slug: categorySlug.trim() || null,
+                description: categoryDescription.trim() || null,
+                displayOrder: parseInt(categoryDisplayOrder) || 0,
                 subCategories: subCategoriesList,
             };
 
@@ -266,6 +272,9 @@ export default function CategoriesPage() {
                                     Subcategories
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Order
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Products
                                 </th>
                                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -317,6 +326,11 @@ export default function CategoriesPage() {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <span className="text-sm text-gray-600">
+                                                {category.displayOrder}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className="text-sm text-gray-600">
                                                 {category.productCount}
                                             </span>
                                         </td>
@@ -353,7 +367,7 @@ export default function CategoriesPage() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center">
+                                    <td colSpan={7} className="px-6 py-12 text-center">
                                         <Tag className="mx-auto text-gray-400 mb-4" size={48} />
                                         <p className="text-gray-500">No categories found</p>
                                     </td>
@@ -453,6 +467,22 @@ export default function CategoriesPage() {
                                     rows={3}
                                     className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                 />
+                            </div>
+
+                            {/* Display Order Field */}
+                            <div>
+                                <label htmlFor="categoryDisplayOrder" className="block text-sm font-medium text-gray-700 mb-2">
+                                    Display Order (Optional)
+                                </label>
+                                <input
+                                    id="categoryDisplayOrder"
+                                    type="number"
+                                    value={categoryDisplayOrder}
+                                    onChange={(e) => setCategoryDisplayOrder(e.target.value)}
+                                    placeholder="0"
+                                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                                />
+                                <p className="mt-1 text-xs text-gray-500">Lower numbers appear first (e.g., 0, 1, 2).</p>
                             </div>
 
                             {/* Sub-Category Field */}

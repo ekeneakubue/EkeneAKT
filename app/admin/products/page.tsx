@@ -12,11 +12,13 @@ import {
   X,
   Save,
   Upload,
-  DollarSign,
   Tag,
   Box,
   Star,
-  TrendingUp
+  TrendingUp,
+  ChevronLeft,
+  ChevronRight,
+  Percent
 } from "lucide-react";
 import Link from "next/link";
 // Categories will be fetched from the database
@@ -39,6 +41,7 @@ interface Product {
   featured: boolean;
   inStock: boolean;
   stockCount: number | null;
+  displayOrder: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -61,6 +64,10 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterStock, setFilterStock] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(25);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,31 +95,60 @@ export default function ProductsPage() {
     featured: false,
     inStock: true,
     stockCount: "",
+    displayOrder: "0",
   });
 
   useEffect(() => {
-    fetchProducts();
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchProducts(1);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm, filterCategory, filterStock, itemsPerPage]);
+
   const fetchCategories = async () => {
     try {
-      const response = await fetch("/api/categories");
+      const response = await fetch("/api/admin/categories", { cache: 'no-store' });
       if (response.ok) {
         const data = await response.json();
-        setCategories(data);
+        // Transform the admin category format to match the component's expected structure
+        const transformedData = data.map((cat: any) => ({
+          id: cat.id,
+          name: cat.name,
+          count: cat.productCount,
+          subcategories: (cat.subCategories || []).map((subName: string) => ({
+            id: subName,
+            name: subName,
+            count: 0 // Count per subcategory isn't provided by this endpoint, but not critical for this page
+          }))
+        }));
+        setCategories(transformedData);
       }
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
   };
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page = 1) => {
     try {
-      const response = await fetch("/api/admin/products");
+      setLoading(true);
+      const queryParams = new URLSearchParams({
+        page: page.toString(),
+        limit: itemsPerPage.toString(),
+        search: searchTerm,
+        category: filterCategory,
+        stock: filterStock
+      });
+      const response = await fetch(`/api/admin/products?${queryParams.toString()}`, { cache: 'no-store' });
       if (response.ok) {
         const data = await response.json();
-        setProducts(data);
+        setProducts(data.products);
+        setTotalPages(data.pagination.totalPages);
+        setTotalItems(data.pagination.total);
+        setCurrentPage(data.pagination.page);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -130,7 +166,7 @@ export default function ProductsPage() {
       });
       if (response.ok) {
         // Refetch products to ensure we have the latest data
-        await fetchProducts();
+        await fetchProducts(currentPage);
       } else {
         const errorData = await response.json();
         alert(errorData.error || "Failed to delete product");
@@ -162,6 +198,7 @@ export default function ProductsPage() {
         featured: product.featured ?? false,
         inStock: product.inStock ?? true,
         stockCount: product.stockCount?.toString() || "",
+        displayOrder: product.displayOrder?.toString() || "0",
       });
       setImagePreview(product.image);
       setSubImagePreviews(product.images || []);
@@ -189,6 +226,7 @@ export default function ProductsPage() {
         featured: false,
         inStock: true,
         stockCount: "",
+        displayOrder: "0",
       });
       setImagePreview(null);
       setSubImagePreviews([]);
@@ -222,6 +260,7 @@ export default function ProductsPage() {
       featured: false,
       inStock: true,
       stockCount: "",
+      displayOrder: "0",
     });
     setImagePreview(null);
     setSubImagePreviews([]);
@@ -405,6 +444,7 @@ export default function ProductsPage() {
       // Prepare data with images array
       const submitData = {
         ...formData,
+        displayOrder: parseInt(formData.displayOrder) || 0,
         images: formData.images.length > 0 ? formData.images : undefined,
       };
 
@@ -432,7 +472,7 @@ export default function ProductsPage() {
       if (response.ok) {
         handleCloseModal();
         // Refetch products to ensure we have the latest data
-        await fetchProducts();
+        await fetchProducts(editingProduct ? currentPage : 1);
       } else {
         try {
           const data = await response.json();
@@ -464,17 +504,7 @@ export default function ProductsPage() {
     return `₦${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
   };
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === "all" || product.category === filterCategory;
-    const matchesStock =
-      filterStock === "all" ||
-      (filterStock === "inStock" && product.inStock) ||
-      (filterStock === "outOfStock" && !product.inStock);
-
-    return matchesSearch && matchesCategory && matchesStock;
-  });
+  const filteredProducts = products;
 
   // Get category names for dropdown
   const categoryNames = categories.map((cat: any) => cat.name);
@@ -580,6 +610,9 @@ export default function ProductsPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Order
+                </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
@@ -617,7 +650,7 @@ export default function ProductsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-sm font-medium text-gray-900">
-                        {formatPrice(product.price)}
+                        {formatPrice(product.price * 1.075 + (product.profit || 0))}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -637,6 +670,9 @@ export default function ProductsPage() {
                           Out of Stock
                         </span>
                       )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm text-gray-600">{product.displayOrder}</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-2">
@@ -681,12 +717,88 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* Summary */}
-      <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100">
+      {/* Summary and Pagination */}
+      <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-sm text-gray-600">
-          Showing <span className="font-semibold">{filteredProducts.length}</span> of{" "}
-          <span className="font-semibold">{products.length}</span> products
+          Showing <span className="font-semibold">{products.length}</span> of{" "}
+          <span className="font-semibold">{totalItems}</span> products
         </p>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                const newPage = Math.max(1, currentPage - 1);
+                setCurrentPage(newPage);
+                fetchProducts(newPage);
+              }}
+              disabled={currentPage === 1}
+              className="p-2 border rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                if (
+                  page === 1 ||
+                  page === totalPages ||
+                  (page >= currentPage - 1 && page <= currentPage + 1)
+                ) {
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => {
+                        setCurrentPage(page);
+                        fetchProducts(page);
+                      }}
+                      className={`px-3 py-1 rounded-lg border transition ${currentPage === page
+                        ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                        : "hover:bg-gray-100 border-gray-300"
+                        }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                } else if (
+                  (page === currentPage - 2 && page > 1) ||
+                  (page === currentPage + 2 && page < totalPages)
+                ) {
+                  return <span key={page} className="px-1 text-gray-400">...</span>;
+                }
+                return null;
+              })}
+            </div>
+            <button
+              onClick={() => {
+                const newPage = Math.min(totalPages, currentPage + 1);
+                setCurrentPage(newPage);
+                fetchProducts(newPage);
+              }}
+              disabled={currentPage === totalPages}
+              className="p-2 border rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        )}
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-600">Per page:</span>
+          <select
+            value={itemsPerPage}
+            onChange={(e) => {
+              setItemsPerPage(parseInt(e.target.value));
+              setCurrentPage(1);
+            }}
+            className="text-sm border border-gray-300 rounded-md p-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
       </div>
 
       {/* Add Product Modal */}
@@ -855,17 +967,14 @@ export default function ProductsPage() {
                 />
               </div>
 
-              {/* Price, Profit and Min Quantity Row */}
-              <div className="grid grid-cols-3 gap-4">
+              {/* Price, VAT, Profit and Min Quantity Row */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
                     Price (₦) <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
-                    <DollarSign
-                      size={20}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                    />
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold select-none">₦</span>
                     <input
                       id="price"
                       name="price"
@@ -877,6 +986,25 @@ export default function ProductsPage() {
                       placeholder="0.00"
                       className="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                       required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="vat" className="block text-sm font-medium text-gray-700 mb-2">
+                    VAT (7.5%)
+                  </label>
+                  <div className="relative">
+                    <Percent
+                      size={20}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    />
+                    <input
+                      id="vat"
+                      type="text"
+                      readOnly
+                      value={`${formatPrice((parseFloat(formData.price) || 0) * 0.075)}`}
+                      className="w-full pl-10 pr-4 py-2 border-2 border-gray-100 bg-gray-50 rounded-lg text-gray-500 cursor-not-allowed focus:outline-none"
                     />
                   </div>
                 </div>
@@ -923,6 +1051,22 @@ export default function ProductsPage() {
                       placeholder="1"
                       className="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     />
+                  </div>
+                </div>
+              </div>
+
+              {/* Selling Price Preview */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="block text-sm text-blue-700 font-semibold mb-1 uppercase tracking-wider">Selling Price Preview</span>
+                    <span className="block text-xs text-blue-600 font-medium">Auto-calculated: (Base Price + Profit + 7.5% VAT)</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="block text-2xl font-bold text-blue-900 leading-tight">
+                      {formatPrice((parseFloat(formData.price) || 0) * 1.075 + (parseFloat(formData.profit) || 0))}
+                    </span>
+                    <span className="block text-xs text-blue-600">per unit</span>
                   </div>
                 </div>
               </div>
@@ -1092,8 +1236,8 @@ export default function ProductsPage() {
                 </p>
               </div>
 
-              {/* Stock Count and Rating Row */}
-              <div className="grid grid-cols-2 gap-4">
+              {/* Stock Count, Rating and Display Order Row */}
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label htmlFor="stockCount" className="block text-sm font-medium text-gray-700 mb-2">
                     Stock Count
@@ -1132,6 +1276,21 @@ export default function ProductsPage() {
                       className="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label htmlFor="displayOrder" className="block text-sm font-medium text-gray-700 mb-2">
+                    Display Order
+                  </label>
+                  <input
+                    id="displayOrder"
+                    name="displayOrder"
+                    type="number"
+                    value={formData.displayOrder}
+                    onChange={handleInputChange}
+                    placeholder="0"
+                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  />
                 </div>
               </div>
 

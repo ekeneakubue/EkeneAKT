@@ -22,9 +22,10 @@ export async function GET() {
         },
         products: true,
       },
-      orderBy: {
-        name: "asc",
-      },
+      orderBy: [
+        { displayOrder: "asc" },
+        { name: "asc" }
+      ],
     });
 
     // Transform categories to match the expected format

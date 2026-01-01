@@ -44,6 +44,7 @@ model Category {
   name         String        @unique
   slug         String?       @unique
   description  String?
+  displayOrder Int           @default(0)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
@@ -90,6 +91,7 @@ model Product {
   featured        Boolean     @default(false)
   inStock         Boolean     @default(true)
   stockCount      Int?
+  displayOrder    Int         @default(0)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 

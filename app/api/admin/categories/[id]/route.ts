@@ -10,6 +10,16 @@ async function getPrisma() {
   return prisma;
 }
 
+// Helper function to generate slug from name
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+}
+
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -28,7 +38,7 @@ export async function PUT(
       );
     }
 
-    const { name, slug, description } = body;
+    const { name, slug, description, displayOrder, subCategories } = body;
 
     // Update category
     const category = await prisma.category.update({
@@ -37,6 +47,31 @@ export async function PUT(
         ...(name && { name: name.trim() }),
         ...(slug !== undefined && { slug: slug?.trim() || null }),
         ...(description !== undefined && { description: description?.trim() || null }),
+        ...(displayOrder !== undefined && { displayOrder: parseInt(displayOrder) || 0 }),
+        // Handle subcategories if provided
+        ...(subCategories !== undefined && {
+          subCategories: {
+            // Delete subcategories that are no longer in the list
+            deleteMany: {
+              name: {
+                notIn: subCategories.map((s: string) => s.trim())
+              }
+            },
+            // Create or connect subcategories in the list
+            connectOrCreate: subCategories.map((subName: string) => ({
+              where: {
+                categoryId_name: {
+                  categoryId: id,
+                  name: subName.trim(),
+                }
+              },
+              create: {
+                name: subName.trim(),
+                slug: generateSlug(subName.trim()),
+              }
+            }))
+          }
+        })
       },
       include: {
         subCategories: true,
@@ -50,6 +85,7 @@ export async function PUT(
       name: category.name,
       slug: category.slug,
       description: category.description,
+      displayOrder: category.displayOrder,
       productCount: category.products.length,
       subCategories: category.subCategories.map((subCat: { name: string }) => subCat.name),
       createdAt: category.createdAt,
@@ -74,8 +110,15 @@ export async function PUT(
       );
     }
 
+    if (error.code === "P2003") {
+      return NextResponse.json(
+        { error: "Cannot remove subcategories that are currently linked to products" },
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
     return NextResponse.json(
-      { error: "Failed to update category" },
+      { error: "Failed to update category: " + (error.message || "Unknown error") },
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }

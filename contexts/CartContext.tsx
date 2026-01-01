@@ -97,15 +97,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const getTotalPrice = () => {
-    // Total price = (price + profit) per piece * minQuantity per carton * number of cartons
+    // Total price (subtotal) = (price + profit) per piece * minQuantity per carton * number of cartons
     return cart.reduce((total, item) => total + ((item.price + item.profit) * item.minQuantity * item.quantity), 0);
   };
 
   const getTaxAmount = () => {
-    // Tax is 7.5% of the total profit
-    // Total profit = profit per piece * minQuantity per carton * number of cartons
-    const totalProfit = cart.reduce((total, item) => total + (item.profit * item.minQuantity * item.quantity), 0);
-    return totalProfit * 0.075;
+    // Tax is 7.5% of the base price
+    // Total tax = (0.075 * base price) * minQuantity per carton * number of cartons
+    return cart.reduce((total, item) => total + (item.price * 0.075 * item.minQuantity * item.quantity), 0);
   };
 
   return (

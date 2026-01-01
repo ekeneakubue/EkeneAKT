@@ -767,7 +767,7 @@ export default function ProductsPage() {
                         <div className="flex items-end justify-between gap-3">
                           <div>
                             <div className="text-lg font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                              ₦{formatPrice(product.price + (product.profit || 0))}
+                              ₦{formatPrice(product.price * 1.075 + (product.profit || 0))}
                             </div>
                             <div className="text-xs text-gray-500">per unit</div>
                           </div>
@@ -841,7 +841,7 @@ export default function ProductsPage() {
                           <div className="flex items-end justify-between gap-3">
                             <div>
                               <div className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                                ₦{formatPrice(product.price + (product.profit || 0))}
+                                ₦{formatPrice(product.price * 1.075 + (product.profit || 0))}
                               </div>
                               <div className="text-xs text-gray-500">per unit</div>
                             </div>

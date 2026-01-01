@@ -58,7 +58,8 @@ export async function PUT(
       featured,
       inStock,
       stockCount,
-      profit
+      profit,
+      displayOrder
     } = body;
 
     // Validation
@@ -178,6 +179,7 @@ export async function PUT(
       featured: featured === true || featured === "true",
       inStock: inStock !== false && inStock !== "false",
       reviews: reviewsNum,
+      displayOrder: parseInt(displayOrder) || 0,
     };
 
     if (profitNum !== undefined) {

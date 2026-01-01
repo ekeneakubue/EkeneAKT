@@ -291,7 +291,7 @@ export default function ProductDetailsPage() {
 
               {/* Price */}
               <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                ₦{formatPrice(product.price + (product.profit || 0))}
+                ₦{formatPrice(product.price * 1.075 + (product.profit || 0))}
                 <span className="text-lg text-gray-600 font-normal ml-2">per unit</span>
               </div>
 

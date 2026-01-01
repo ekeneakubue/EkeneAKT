@@ -9,7 +9,7 @@ async function getPrisma() {
   return prisma;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     let prisma;
     try {
@@ -25,13 +25,47 @@ export async function GET() {
       );
     }
 
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "50");
+    const search = searchParams.get("search") || "";
+    const category = searchParams.get("category") || "all";
+    const stock = searchParams.get("stock") || "all";
+
+    const skip = (page - 1) * limit;
+
+    // Build where clause
+    const where: any = {};
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (category !== "all") {
+      where.category = { name: category };
+    }
+
+    if (stock !== "all") {
+      where.inStock = stock === "inStock";
+    }
+
+    // Get total count for pagination
+    const totalCount = await prisma.product.count({ where });
+
     const products = await prisma.product.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: [
+        { displayOrder: "asc" },
+        { createdAt: "desc" }
+      ],
       include: {
         category: true,
         subCategory: true,
-      },
-      orderBy: {
-        createdAt: "desc",
       },
     });
 
@@ -42,7 +76,15 @@ export async function GET() {
       subCategory: product.subCategory?.name || product.subCategoryOld || null,
     }));
 
-    return NextResponse.json(transformedProducts);
+    return NextResponse.json({
+      products: transformedProducts,
+      pagination: {
+        total: totalCount,
+        page,
+        limit,
+        totalPages: Math.ceil(totalCount / limit),
+      }
+    });
   } catch (error) {
     console.error("Error fetching products:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
@@ -106,7 +148,8 @@ export async function POST(request: Request) {
       featured,
       inStock,
       stockCount,
-      profit
+      profit,
+      displayOrder
     } = body;
 
     // Validation
@@ -227,6 +270,7 @@ export async function POST(request: Request) {
       featured: featured === true || featured === "true",
       inStock: inStock !== false && inStock !== "false",
       reviews: reviewsNum,
+      displayOrder: parseInt(displayOrder) || 0,
     };
 
     // Only add optional fields if they have values
@@ -324,4 +368,5 @@ export async function POST(request: Request) {
     );
   }
 }
+
 

@@ -47,7 +47,10 @@ export async function GET(request: Request) {
         // Note: categoryParam filtering would need to be done on category relation
         // For now, we'll filter on the transformed data
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { displayOrder: "asc" },
+        { createdAt: "desc" }
+      ],
       take: safeTake,
       include: {
         category: true,

@@ -413,11 +413,11 @@ export default function CartPage() {
                         <div className="flex-1">
                           <h3 className="text-xl font-bold text-gray-900 mb-2">{item.name}</h3>
                           <p className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                            ₦{formatPrice(item.price + item.profit)}
+                            ₦{formatPrice(item.price * 1.075 + item.profit)}
                           </p>
                           <p className="text-xs text-gray-600">per unit ({item.minQuantity} pieces)</p>
                           <p className="text-sm text-gray-600 mt-2 font-semibold">
-                            ₦{formatPrice((item.price + item.profit) * item.minQuantity * item.quantity)} total
+                            ₦{formatPrice((item.price * 1.075 + item.profit) * item.minQuantity * item.quantity)} total
                             <span className="text-xs font-normal text-gray-500 ml-2">
                               ({item.quantity} {item.quantity === 1 ? 'carton' : 'cartons'} × {item.minQuantity} pieces)
                             </span>
@@ -521,12 +521,9 @@ export default function CartPage() {
                   <div className="space-y-4 mb-6">
                     <div className="flex justify-between text-gray-700">
                       <span>Subtotal</span>
-                      <span className="font-semibold">₦{formatPrice(subtotal)}</span>
+                      <span className="font-semibold">₦{formatPrice(total)}</span>
                     </div>
-                    <div className="flex justify-between text-gray-700">
-                      <span>Tax</span>
-                      <span className="font-semibold">₦{formatPrice(tax)}</span>
-                    </div>
+
                     <div className="border-t-2 border-blue-200 pt-4 mt-4">
                       <div className="flex justify-between items-center">
                         <span className="text-xl font-bold text-gray-900">Total</span>
