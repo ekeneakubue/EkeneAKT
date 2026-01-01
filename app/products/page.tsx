@@ -1,19 +1,17 @@
 import { Metadata } from "next";
 import ProductListingClient from "./ProductListingClient";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://ekeneakt.com";
-
 export const metadata: Metadata = {
   title: "Shop All Products",
   description: "Browse our extensive collection of premium lighting solutions. From chandeliers to LED fixtures, find the perfect light for your space.",
   openGraph: {
     title: "Shop All Products - AKT Lighting",
     description: "Browse our extensive collection of premium lighting solutions. Find the perfect light for your space.",
-    url: `${baseUrl}/products`,
+    url: "/products",
     siteName: "AKT Lighting",
     images: [
       {
-        url: `${baseUrl}/og-image.jpg`,
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "AKT Lighting Products Collection",
@@ -26,7 +24,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Shop All Products - AKT Lighting",
     description: "Browse our extensive collection of premium lighting solutions.",
-    images: [`${baseUrl}/og-image.jpg`],
+    images: ["/og-image.jpg"],
   },
 };
 

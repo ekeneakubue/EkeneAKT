@@ -24,7 +24,6 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { id } = await params;
   const product = await getProduct(id);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://ekeneakt.com";
 
   if (!product) {
     return {
@@ -35,17 +34,16 @@ export async function generateMetadata(
   const title = product.name;
   const description = product.description || `Buy ${product.name} at AKT Lighting. Premium lighting solutions.`;
 
-  // Ensure image URL is absolute for social media crawlers
+  // Use absolute URL from DB or relative path for local images
+  // metadataBase in layout.tsx will handle relative path resolution
   let imageUrl = "/og-image.jpg";
   if (product.image) {
     imageUrl = product.image.startsWith('http')
       ? product.image
-      : `${baseUrl}${product.image.startsWith('/') ? '' : '/'}${product.image}`;
-  } else {
-    imageUrl = `${baseUrl}/og-image.jpg`;
+      : (product.image.startsWith('/') ? product.image : `/${product.image}`);
   }
 
-  const url = `${baseUrl}/products/${id}`;
+  const url = `/products/${id}`;
 
   return {
     title,
