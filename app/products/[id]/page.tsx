@@ -34,13 +34,18 @@ export async function generateMetadata(
   const title = product.name;
   const description = product.description || `Buy ${product.name} at AKT Lighting. Premium lighting solutions.`;
 
-  // Use absolute URL from DB or relative path for local images
-  // metadataBase in layout.tsx will handle relative path resolution
+  // Determine the correct image URL for social media
   let imageUrl = "/og-image.jpg";
   if (product.image) {
-    imageUrl = product.image.startsWith('http')
-      ? product.image
-      : (product.image.startsWith('/') ? product.image : `/${product.image}`);
+    if (product.image.startsWith('http')) {
+      imageUrl = product.image;
+    } else if (product.image.startsWith('data:') || product.image.length > 512) {
+      // If it's a data URL or a very long string (likely base64), use the image proxy
+      imageUrl = `/api/products/${id}/image`;
+    } else {
+      // Treat as a relative path
+      imageUrl = product.image.startsWith('/') ? product.image : `/${product.image}`;
+    }
   }
 
   const url = `/products/${id}`;
