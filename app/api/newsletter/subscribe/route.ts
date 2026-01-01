@@ -12,17 +12,18 @@ export async function POST(req: Request) {
             );
         }
 
-        if (!process.env.RESEND_API_KEY) {
-            console.error("CRITICAL: RESEND_API_KEY is not defined in environment variables.");
+        const resendClient = resend;
+
+        if (!resendClient) {
+            console.error("CRITICAL: Resend client is not initialized.");
             return NextResponse.json(
-                { error: "Newsletter service is not configured. Please add RESEND_API_KEY to .env" },
+                { error: "Newsletter service is not configured." },
                 { status: 500 }
             );
         }
 
         // 1. Send Welcome Email to Subscriber
-        // Note: In Resend trial mode, 'to' must be your verified email address or account email
-        const { data: welcomeData, error: welcomeError } = await resend.emails.send({
+        const { data: welcomeData, error: welcomeError } = await resendClient.emails.send({
             from: "onboarding@resend.dev",
             to: email,
             subject: "Welcome to EKENE-AKT Lighting Newsletter!",
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
         }
 
         // 2. Notify Admin
-        const { data: adminData, error: adminError } = await resend.emails.send({
+        const { data: adminData, error: adminError } = await resendClient.emails.send({
             from: "onboarding@resend.dev",
             to: "ekeneaktonline@gmail.com",
             subject: "New Newsletter Subscriber!",

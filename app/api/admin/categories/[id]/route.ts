@@ -80,16 +80,17 @@ export async function PUT(
     });
 
     // Transform response
+    const cat = category as any;
     const transformedCategory = {
-      id: category.id,
-      name: category.name,
-      slug: category.slug,
-      description: category.description,
-      displayOrder: category.displayOrder,
-      productCount: category.products.length,
-      subCategories: category.subCategories.map((subCat: { name: string }) => subCat.name),
-      createdAt: category.createdAt,
-      updatedAt: category.updatedAt,
+      id: cat.id,
+      name: cat.name,
+      slug: cat.slug,
+      description: cat.description,
+      displayOrder: cat.displayOrder || 0,
+      productCount: cat.products?.length || 0,
+      subCategories: cat.subCategories?.map((subCat: any) => subCat.name) || [],
+      createdAt: cat.createdAt,
+      updatedAt: cat.updatedAt,
     };
 
     return NextResponse.json(transformedCategory);
@@ -147,9 +148,10 @@ export async function DELETE(
       );
     }
 
-    if (category.products.length > 0) {
+    const cat = category as any;
+    if (cat.products?.length > 0) {
       return NextResponse.json(
-        { error: `Cannot delete category because it has ${category.products.length} product(s)` },
+        { error: `Cannot delete category because it has ${cat.products.length} product(s)` },
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
