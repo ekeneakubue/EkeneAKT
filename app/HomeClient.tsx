@@ -297,50 +297,70 @@ export default function HomeClient() {
                     <h2 className="text-3xl md:text-5xl font-bold mb-4">Shop by Category</h2>
                     <p className="text-gray-600">Find the perfect lighting for every space</p>
                 </div>
-                <div className="relative overflow-hidden group">
-                    <div className="flex animate-marquee gap-6 whitespace-nowrap">
-                        {/* First set of categories */}
-                        {categories.map((category) => (
-                            <Link key={`${category.id}-1`} href={`/products?category=${encodeURIComponent(category.name)}`} className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all w-80 shrink-0 border-2 border-transparent hover:border-amber-400">
-                                <div className="bg-blue-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-xl"><Lightbulb size={28} /></div>
-                                <h3 className="text-xl font-bold mb-2">{category.name}</h3>
-                                <p className="text-gray-600">{category.count} Products</p>
-                            </Link>
-                        ))}
-                        {/* Duplicate set for seamless looping */}
-                        {categories.map((category) => (
-                            <Link key={`${category.id}-2`} href={`/products?category=${encodeURIComponent(category.name)}`} className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all w-80 shrink-0 border-2 border-transparent hover:border-amber-400">
-                                <div className="bg-blue-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-xl"><Lightbulb size={28} /></div>
-                                <h3 className="text-xl font-bold mb-2">{category.name}</h3>
-                                <p className="text-gray-600">{category.count} Products</p>
-                            </Link>
-                        ))}
-                    </div>
+                <div className="relative overflow-hidden group min-h-[200px] flex items-center justify-center">
+                    {categoriesLoading ? (
+                        <div className="flex flex-col items-center justify-center py-12">
+                            <div className="relative w-12 h-12">
+                                <div className="absolute inset-0 border-4 border-blue-100 rounded-full"></div>
+                                <div className="absolute inset-0 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                            <p className="mt-4 text-gray-500 font-medium italic">Discovering collections...</p>
+                        </div>
+                    ) : (
+                        <div className="flex animate-marquee gap-6 whitespace-nowrap">
+                            {/* First set of categories */}
+                            {categories.map((category) => (
+                                <Link key={`${category.id}-1`} href={`/products?category=${encodeURIComponent(category.name)}`} className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all w-80 shrink-0 border-2 border-transparent hover:border-amber-400">
+                                    <div className="bg-blue-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-xl"><Lightbulb size={28} /></div>
+                                    <h3 className="text-xl font-bold mb-2">{category.name}</h3>
+                                    <p className="text-gray-600">{category.count} Products</p>
+                                </Link>
+                            ))}
+                            {/* Duplicate set for seamless looping */}
+                            {categories.map((category) => (
+                                <Link key={`${category.id}-2`} href={`/products?category=${encodeURIComponent(category.name)}`} className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all w-80 shrink-0 border-2 border-transparent hover:border-amber-400">
+                                    <div className="bg-blue-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-xl"><Lightbulb size={28} /></div>
+                                    <h3 className="text-xl font-bold mb-2">{category.name}</h3>
+                                    <p className="text-gray-600">{category.count} Products</p>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
 
             <section id="products" className="py-20 px-4 md:px-8 lg:px-12 bg-white">
                 <div className="container mx-auto">
                     <div className="text-center mb-16"><h2 className="text-3xl md:text-5xl font-bold mb-4">Featured Products</h2><p className="text-gray-600">Our most popular lighting solutions</p></div>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {featuredProducts.map((product) => (
-                            <div key={product.id} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition border-2 border-gray-100 hover:border-amber-300 overflow-hidden group">
-                                <div className="aspect-square relative bg-slate-50 flex items-center justify-center">
-                                    {product.image ? <img src={product.image} alt={product.name} className="object-cover w-full h-full" /> : <Lightbulb size={80} className="text-blue-200" />}
-                                </div>
-                                <div className="p-6">
-                                    <h3 className="font-bold text-lg mb-2 truncate">{product.name}</h3>
-                                    <div className="flex items-center gap-1 mb-4">
-                                        {[...Array(5)].map((_, i) => <Star key={i} size={14} className={i < (product.rating || 0) ? "fill-amber-400 text-amber-400" : "text-gray-300"} />)}
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-2xl font-bold text-blue-900">₦{formatPrice(product.price * 1.075 + (product.profit || 0))}</span>
-                                        <button onClick={() => handleViewDetails(product)} className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-500 transition">View</button>
-                                    </div>
-                                </div>
+                    {featuredLoading ? (
+                        <div className="flex flex-col items-center justify-center py-20">
+                            <div className="relative w-16 h-16">
+                                <div className="absolute inset-0 border-4 border-blue-100 rounded-full"></div>
+                                <div className="absolute inset-0 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
                             </div>
-                        ))}
-                    </div>
+                            <p className="mt-6 text-gray-500 font-medium text-lg italic animate-pulse">Illuminating premium choices...</p>
+                        </div>
+                    ) : (
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {featuredProducts.map((product) => (
+                                <div key={product.id} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition border-2 border-gray-100 hover:border-amber-300 overflow-hidden group">
+                                    <div className="aspect-square relative bg-slate-50 flex items-center justify-center">
+                                        {product.image ? <img src={product.image} alt={product.name} className="object-cover w-full h-full" /> : <Lightbulb size={80} className="text-blue-200" />}
+                                    </div>
+                                    <div className="p-6">
+                                        <h3 className="font-bold text-lg mb-2 truncate">{product.name}</h3>
+                                        <div className="flex items-center gap-1 mb-4">
+                                            {[...Array(5)].map((_, i) => <Star key={i} size={14} className={i < (product.rating || 0) ? "fill-amber-400 text-amber-400" : "text-gray-300"} />)}
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-2xl font-bold text-blue-900">₦{formatPrice(product.price * 1.075 + (product.profit || 0))}</span>
+                                            <button onClick={() => handleViewDetails(product)} className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-500 transition">View</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     <div className="text-center mt-12"><Link href="/products" className="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold hover:scale-105 transition shadow-lg">View All Products →</Link></div>
                 </div>
             </section>
