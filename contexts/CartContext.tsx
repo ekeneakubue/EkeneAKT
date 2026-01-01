@@ -36,7 +36,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const parsed = JSON.parse(savedCart) as Array<CartItem & { id: string | number }>;
         // Backwards-compatible migration: older carts used numeric IDs.
         setCart(
-          parsed.map((item) => ({
+          parsed.map((item: CartItem & { id: string | number }) => ({
             ...item,
             id: String(item.id),
             profit: item.profit || 0, // Ensure profit exists for old items

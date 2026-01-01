@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { resend } from "@/lib/resend";
+import { getResendClient } from "@/lib/resend";
 
 export async function POST(req: Request) {
     try {
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
             );
         }
 
-        const resendClient = resend;
+        const resendClient = getResendClient();
 
         if (!resendClient) {
             console.error("CRITICAL: Resend client is not initialized.");

@@ -1,7 +1,21 @@
 import { Resend } from 'resend';
 
-const apiKey = process.env.RESEND_API_KEY;
+/**
+ * Returns an initialized Resend client if the RESEND_API_KEY is present.
+ * This is wrapped in a function to prevent "Missing API key" errors 
+ * during Next.js build-time module evaluation.
+ */
+export const getResendClient = () => {
+    const apiKey = process.env.RESEND_API_KEY;
 
-// Only initialize if we have a key, otherwise export a proxy or handle it in the routes
-// This prevents the "Missing API key" error during build time
-export const resend = apiKey ? new Resend(apiKey) : null;
+    if (!apiKey || apiKey === 'undefined' || apiKey.trim() === '') {
+        return null;
+    }
+
+    try {
+        return new Resend(apiKey);
+    } catch (error) {
+        console.error("Failed to initialize Resend client:", error);
+        return null;
+    }
+};
