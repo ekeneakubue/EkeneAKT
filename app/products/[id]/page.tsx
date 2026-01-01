@@ -1,16 +1,11 @@
 import { Metadata } from "next";
 import ProductDetailsClient from "./ProductDetailsClient";
+import { prisma } from "../../../lib/prisma";
 
 // Helper function to fetch product data for metadata
 async function getProduct(id: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://ekeneakt.com";
-  // We call the API internal route or fetch from DB directly. 
-  // Since this is a server component, we should ideally fetch from DB directly if possible, 
-  // but calling our own API is also fine if configured.
-  // For simplicity and to reuse existing logic, let's use the DB directly if we can import prisma.
   try {
-    const { prisma } = await import("../../../lib/prisma");
-    const product = await prisma.product.findUnique({
+    return await prisma.product.findUnique({
       where: { id },
       select: {
         name: true,
@@ -18,7 +13,6 @@ async function getProduct(id: string) {
         image: true,
       }
     });
-    return product;
   } catch (error) {
     console.error("Error fetching product for metadata:", error);
     return null;
@@ -30,23 +24,34 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { id } = await params;
   const product = await getProduct(id);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://ekeneakt.com";
 
   if (!product) {
     return {
-      title: "Product Not Found - AKT Lighting",
+      title: "Product Not Found",
     };
   }
 
-  const title = `${product.name} - AKT Lighting`;
+  const title = product.name;
   const description = product.description || `Buy ${product.name} at AKT Lighting. Premium lighting solutions.`;
-  const imageUrl = product.image || "/og-image.jpg";
-  const url = `https://ekeneakt.com/products/${id}`;
+
+  // Ensure image URL is absolute for social media crawlers
+  let imageUrl = "/og-image.jpg";
+  if (product.image) {
+    imageUrl = product.image.startsWith('http')
+      ? product.image
+      : `${baseUrl}${product.image.startsWith('/') ? '' : '/'}${product.image}`;
+  } else {
+    imageUrl = `${baseUrl}/og-image.jpg`;
+  }
+
+  const url = `${baseUrl}/products/${id}`;
 
   return {
     title,
     description,
     openGraph: {
-      title,
+      title: `${title} - AKT Lighting`,
       description,
       url,
       siteName: "AKT Lighting",
@@ -63,7 +68,7 @@ export async function generateMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: `${title} - AKT Lighting`,
       description,
       images: [imageUrl],
     },
