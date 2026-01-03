@@ -304,7 +304,7 @@ export default function HomeClient() {
                                 <div className="absolute inset-0 border-4 border-blue-100 rounded-full"></div>
                                 <div className="absolute inset-0 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
                             </div>
-                            <p className="mt-4 text-gray-500 font-medium italic">Discovering collections...</p>
+                            <p className="mt-4 text-gray-500 font-medium italic">Discovering collections...</p>create manage dashboard with the permission to see Dashboard, Products, Categories, and Edit Profile in Sidebar
                         </div>
                     ) : (
                         <div className="flex animate-marquee gap-6 whitespace-nowrap">

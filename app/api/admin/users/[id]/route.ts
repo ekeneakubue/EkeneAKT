@@ -2,6 +2,35 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../../../lib/prisma";
 import * as bcrypt from "bcryptjs";
 
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    const { password: _, ...userWithoutPassword } = user;
+    return NextResponse.json(userWithoutPassword);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch user" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }

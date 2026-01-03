@@ -21,6 +21,7 @@ import {
   Percent
 } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "../../../contexts/AuthContext";
 // Categories will be fetched from the database
 
 interface Product {
@@ -58,6 +59,7 @@ type CategoryStructure = {
 };
 
 export default function ProductsPage() {
+  const { user } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<CategoryStructure[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1009,28 +1011,30 @@ export default function ProductsPage() {
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="profit" className="block text-sm font-medium text-gray-700 mb-2">
-                    Profit (₦)
-                  </label>
-                  <div className="relative">
-                    <TrendingUp
-                      size={20}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                    />
-                    <input
-                      id="profit"
-                      name="profit"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={formData.profit}
-                      onChange={handleInputChange}
-                      placeholder="0.00"
-                      className="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                    />
+                {user?.role === "admin" && (
+                  <div>
+                    <label htmlFor="profit" className="block text-sm font-medium text-gray-700 mb-2">
+                      Profit (₦)
+                    </label>
+                    <div className="relative">
+                      <TrendingUp
+                        size={20}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      />
+                      <input
+                        id="profit"
+                        name="profit"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={formData.profit}
+                        onChange={handleInputChange}
+                        placeholder="0.00"
+                        className="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div>
                   <label htmlFor="minQuantity" className="block text-sm font-medium text-gray-700 mb-2">

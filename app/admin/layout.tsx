@@ -14,6 +14,7 @@ import {
   X,
   LogOut,
   Home,
+  User,
   ChevronRight,
   Tag
 } from "lucide-react";
@@ -26,6 +27,7 @@ const navigation = [
   { name: "Orders", href: "/admin/orders", icon: ShoppingBag },
   { name: "Customers", href: "/admin/customers", icon: Users },
   { name: "Users", href: "/admin/users", icon: UserCog },
+  { name: "Edit Profile", href: "/admin/profile", icon: User },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
@@ -41,14 +43,14 @@ export default function AdminLayout({
 
   const handleSignOut = async () => {
     await signOut();
-    router.push("/");
+    router.push("/admin/login");
   };
   // Protect admin routes
   useEffect(() => {
     // Skip check for login page
     if (pathname === "/admin/login") return;
 
-    if (!isLoading && (!isAuthenticated || user?.role !== "admin")) {
+    if (!isLoading && (!isAuthenticated || (user?.role !== "admin" && user?.role !== "manager"))) {
       router.push("/admin/login");
     }
   }, [isLoading, isAuthenticated, user, router, pathname]);
@@ -58,7 +60,7 @@ export default function AdminLayout({
     return <>{children}</>;
   }
 
-  if (isLoading || !isAuthenticated || user?.role !== "admin") {
+  if (isLoading || !isAuthenticated || (user?.role !== "admin" && user?.role !== "manager")) {
     if (isLoading) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -72,6 +74,15 @@ export default function AdminLayout({
     // Return null while redirecting
     return null;
   }
+
+  // Filter navigation based on role
+  const filteredNavigation = navigation.filter((item) => {
+    if (user?.role === "admin") return true;
+    if (user?.role === "manager") {
+      return ["Products", "Categories", "Edit Profile"].includes(item.name);
+    }
+    return false;
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -99,7 +110,9 @@ export default function AdminLayout({
                 <h1 className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
                   AKT Admin
                 </h1>
-                <p className="text-xs font-semibold text-amber-600 tracking-wider">DASHBOARD</p>
+                <p className="text-xs font-semibold text-amber-600 tracking-wider">
+                  {user?.role === "manager" ? "MANAGER" : "DASHBOARD"}
+                </p>
               </div>
             </Link>
             <button
@@ -112,7 +125,7 @@ export default function AdminLayout({
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            {navigation.map((item) => {
+            {filteredNavigation.map((item) => {
               // For Dashboard, only match exact path
               // For other items, match exact path or paths that start with the href + "/"
               const isActive = item.href === "/admin"
@@ -178,11 +191,19 @@ export default function AdminLayout({
             </div>
             <div className="flex items-center gap-4">
               <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-700 font-semibold">
-                    {user?.name?.charAt(0).toUpperCase() || "A"}
-                  </span>
-                </div>
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name || "User"}
+                    className="w-8 h-8 rounded-full object-cover border border-gray-200"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <span className="text-blue-700 font-semibold">
+                      {user?.name?.charAt(0).toUpperCase() || "A"}
+                    </span>
+                  </div>
+                )}
                 <span className="font-medium">{user?.name || "Admin"}</span>
               </div>
             </div>

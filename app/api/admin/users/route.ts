@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import * as bcrypt from "bcryptjs";
 
 // Ensure this route always returns JSON
 export const dynamic = 'force-dynamic';
@@ -10,12 +11,12 @@ async function getPrisma() {
     console.log("Importing Prisma client...");
     const { prisma } = await import("../../../../lib/prisma");
     console.log("Prisma client imported successfully");
-    
+
     if (!prisma) {
       console.error("Prisma client is undefined after import");
       throw new Error("Prisma client is undefined");
     }
-    
+
     return prisma;
   } catch (importError: any) {
     console.error("Error importing Prisma:", {
@@ -31,20 +32,20 @@ async function getPrisma() {
 export async function GET() {
   try {
     console.log("Starting users fetch...");
-    
+
     const prisma = await getPrisma();
-    
+
     if (!prisma) {
       throw new Error("Prisma client not initialized");
     }
-    
+
     console.log("Prisma client obtained, testing connection...");
-    
+
     // Test database connection first with timeout
     try {
       const connectionTest = Promise.race([
         prisma.$queryRaw`SELECT 1`,
-        new Promise((_, reject) => 
+        new Promise((_, reject) =>
           setTimeout(() => reject(new Error("Connection timeout after 5 seconds")), 5000)
         )
       ]);
@@ -57,7 +58,7 @@ export async function GET() {
         name: connectionError?.name,
         meta: connectionError?.meta,
       });
-      
+
       // Return empty array instead of error so UI can still render
       if (connectionError.code === "P1001" || connectionError.message?.includes("Can't reach database server") || connectionError.message?.includes("connection")) {
         console.warn("Database connection failed, returning empty users array");
@@ -66,10 +67,10 @@ export async function GET() {
           { status: 200, headers: { "Content-Type": "application/json" } }
         );
       }
-      
+
       throw new Error(`Database connection failed: ${connectionError?.message || String(connectionError)}`);
     }
-    
+
     console.log("Fetching users from database...");
     const users = await prisma.user.findMany({
       select: {
@@ -100,18 +101,18 @@ export async function GET() {
       message: error.message,
       stack: error.stack,
     });
-    
+
     // Handle Prisma Client initialization errors
     if (error.message?.includes("PrismaClient") || error.message?.includes("DATABASE_URL")) {
       return NextResponse.json(
-        { 
+        {
           error: "Database configuration error. Please ensure DATABASE_URL is set in your .env file.",
           details: process.env.NODE_ENV === "development" ? error.message : undefined
         },
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
-    
+
     // Handle database connection errors (P1001)
     if (error.code === "P1001" || error.message?.includes("Can't reach database server") || error.message?.includes("connection")) {
       // Return empty array instead of error so UI can still render
@@ -121,7 +122,7 @@ export async function GET() {
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
     }
-    
+
     // Handle Prisma errors
     if (error.code === "P2025" || error.message?.includes("Record to find does not exist")) {
       return NextResponse.json(
@@ -134,14 +135,14 @@ export async function GET() {
     // P2021 = Table does not exist
     // Common PostgreSQL error: relation "users" does not exist
     if (
-      error.code === "P2021" || 
-      error.message?.includes("does not exist") || 
+      error.code === "P2021" ||
+      error.message?.includes("does not exist") ||
       error.message?.includes("Unknown table") ||
       error.message?.includes("relation") && error.message?.includes("does not exist") ||
       error.message?.includes("Table") && error.message?.includes("doesn't exist")
     ) {
       return NextResponse.json(
-        { 
+        {
           error: "Database schema mismatch. The 'users' table does not exist. Please run: npx prisma db push",
           details: process.env.NODE_ENV === "development" ? {
             message: error.message,
@@ -154,8 +155,8 @@ export async function GET() {
     }
 
     return NextResponse.json(
-      { 
-        error: "Failed to fetch users", 
+      {
+        error: "Failed to fetch users",
         details: process.env.NODE_ENV === "development" ? {
           message: error.message,
           code: error.code,
@@ -170,11 +171,11 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const prisma = await getPrisma();
-    
+
     if (!prisma) {
       throw new Error("Prisma client not initialized");
     }
-    
+
     let body;
     try {
       body = await request.json();
@@ -225,10 +226,11 @@ export async function POST(request: Request) {
     }
 
     // Prepare data object - only include avatar if it's provided and not empty
+    const hashedPassword = await bcrypt.hash(password, 10);
     const userData: any = {
       name: name.trim(),
       email: email.toLowerCase().trim(),
-      password: password, // TODO: Hash password in production
+      password: hashedPassword,
       role: role || "admin",
     };
 
@@ -251,7 +253,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json(user, { 
+    return NextResponse.json(user, {
       status: 201,
       headers: {
         "Content-Type": "application/json",
@@ -266,18 +268,18 @@ export async function POST(request: Request) {
       stack: error.stack,
       meta: error.meta,
     });
-    
+
     // Handle Prisma Client initialization errors
     if (error.message?.includes("PrismaClient") || error.message?.includes("DATABASE_URL")) {
       return NextResponse.json(
-        { 
+        {
           error: "Database configuration error. Please ensure DATABASE_URL is set in your .env file.",
           details: process.env.NODE_ENV === "development" ? error.message : undefined
         },
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
-    
+
     // Handle Prisma unique constraint error
     if (error.code === "P2002") {
       return NextResponse.json(
@@ -297,7 +299,7 @@ export async function POST(request: Request) {
     // Handle unknown field errors (like if avatar field doesn't exist in DB)
     if (error.message?.includes("Unknown argument") || error.message?.includes("Unknown field")) {
       return NextResponse.json(
-        { 
+        {
           error: "Database schema mismatch. Please run: npx prisma generate && npx prisma migrate dev",
           details: process.env.NODE_ENV === "development" ? error.message : undefined
         },
@@ -306,8 +308,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { 
-        error: "Failed to create user", 
+      {
+        error: "Failed to create user",
         details: process.env.NODE_ENV === "development" ? {
           message: error.message,
           code: error.code,
