@@ -18,8 +18,12 @@ export default function AdminLoginPage() {
 
     // Redirect if already authenticated as admin
     useEffect(() => {
-        if (isAuthenticated && user?.role === "admin") {
-            router.push("/admin");
+        if (isAuthenticated) {
+            if (user?.role === "admin") {
+                router.push("/admin");
+            } else if (user?.role === "manager") {
+                router.push("/admin/products");
+            }
         }
     }, [isAuthenticated, user, router]);
 
@@ -30,9 +34,7 @@ export default function AdminLoginPage() {
 
         try {
             const success = await signInAdmin(email, password);
-            if (success) {
-                router.push("/admin");
-            } else {
+            if (!success) {
                 setError("Invalid admin credentials");
             }
         } catch (err) {

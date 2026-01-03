@@ -53,6 +53,10 @@ export default function AdminLayout({
     if (!isLoading && (!isAuthenticated || (user?.role !== "admin" && user?.role !== "manager"))) {
       router.push("/admin/login");
     }
+
+    if (!isLoading && isAuthenticated && user?.role === "manager" && pathname === "/admin") {
+      router.push("/admin/products");
+    }
   }, [isLoading, isAuthenticated, user, router, pathname]);
 
   // Handle admin login page specifically to avoid layout issues
