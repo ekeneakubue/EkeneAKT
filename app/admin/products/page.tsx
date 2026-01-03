@@ -300,9 +300,9 @@ export default function ProductsPage() {
         return;
       }
 
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setError("Image size must be less than 5MB");
+      // Validate file size (max 3MB to avoid server payload limits)
+      if (file.size > 3 * 1024 * 1024) {
+        setError("Image size must be less than 3MB");
         return;
       }
 
@@ -883,7 +883,7 @@ export default function ProductsPage() {
                         className="hidden"
                       />
                     </label>
-                    <p className="mt-1 text-xs text-gray-500">JPG, PNG or GIF (max 5MB)</p>
+                    <p className="mt-1 text-xs text-gray-500">JPG, PNG or GIF (max 3MB)</p>
                   </div>
                 </div>
               </div>
@@ -933,7 +933,7 @@ export default function ProductsPage() {
                     </div>
                   ))}
                 </div>
-                <p className="mt-2 text-xs text-gray-500">Upload up to 3 additional product images (max 5MB each)</p>
+                <p className="mt-2 text-xs text-gray-500">Upload up to 3 additional product images (max 3MB each)</p>
               </div>
 
               {/* Name Field */}

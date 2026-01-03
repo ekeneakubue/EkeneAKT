@@ -381,7 +381,7 @@ export default function ProductListingClient() {
                                     <Filter size={20} className="text-amber-600" />
                                     Categories
                                 </h3>
-                                <div className="space-y-1">
+                                <div className="space-y-1 max-h-[60vh] overflow-y-auto pr-2">
                                     {/* All Products */}
                                     <button
                                         onClick={() => setSelectedCategory("all")}
