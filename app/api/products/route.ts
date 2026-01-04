@@ -44,17 +44,35 @@ export async function GET(request: Request) {
     const products = await prisma.product.findMany({
       where: {
         ...(featured === undefined ? {} : { featured }),
-        // Note: categoryParam filtering would need to be done on category relation
-        // For now, we'll filter on the transformed data
       },
       orderBy: [
         { displayOrder: "asc" },
         { createdAt: "desc" }
       ],
       take: safeTake,
-      include: {
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        profit: true,
+        minQuantity: true,
+        rating: true,
+        reviews: true,
+        featured: true,
+        inStock: true,
+        stockCount: true,
+        displayOrder: true,
+        createdAt: true,
+        // Relations
         category: true,
         subCategory: true,
+        // Legacy fields if needed
+        categoryOld: true,
+        subCategoryOld: true,
+        // Only fetch image if requested
+        image: includeImage,
+        // Explicitly NOT fetching the 'images' array (additional images) to save bandwidth
       },
     });
 
