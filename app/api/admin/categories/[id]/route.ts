@@ -41,38 +41,54 @@ export async function PUT(
     const { name, slug, description, displayOrder, subCategories } = body;
 
     // Update category
-    const category = await prisma.category.update({
+    // 1. Update scalar fields
+    const updatedCategory = await prisma.category.update({
       where: { id },
       data: {
         ...(name && { name: name.trim() }),
         ...(slug !== undefined && { slug: slug?.trim() || null }),
         ...(description !== undefined && { description: description?.trim() || null }),
         ...(displayOrder !== undefined && { displayOrder: parseInt(displayOrder) || 0 }),
-        // Handle subcategories if provided
-        ...(subCategories !== undefined && {
-          subCategories: {
-            // Delete subcategories that are no longer in the list
-            deleteMany: {
-              name: {
-                notIn: subCategories.map((s: string) => s.trim())
-              }
-            },
-            // Create or connect subcategories in the list
-            connectOrCreate: subCategories.map((subName: string) => ({
-              where: {
-                categoryId_name: {
-                  categoryId: id,
-                  name: subName.trim(),
-                }
-              },
-              create: {
-                name: subName.trim(),
-                slug: generateSlug(subName.trim()),
-              }
-            }))
-          }
-        })
       },
+    });
+
+    // 2. Handle subcategories if provided
+    if (subCategories !== undefined) {
+      const newSubCategories = subCategories.map((s: string) => s.trim());
+
+      // Delete subcategories not in the new list
+      await prisma.subCategory.deleteMany({
+        where: {
+          categoryId: id,
+          name: { notIn: newSubCategories }
+        }
+      });
+
+      // Create new subcategories if they don't exist
+      for (const subName of newSubCategories) {
+        // Check if exists
+        const existing = await prisma.subCategory.findFirst({
+          where: {
+            categoryId: id,
+            name: subName
+          }
+        });
+
+        if (!existing) {
+          await prisma.subCategory.create({
+            data: {
+              name: subName,
+              slug: generateSlug(subName),
+              categoryId: id
+            }
+          });
+        }
+      }
+    }
+
+    // 3. Fetch final state to return
+    const category = await prisma.category.findUnique({
+      where: { id },
       include: {
         subCategories: true,
         products: true,
