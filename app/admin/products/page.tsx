@@ -606,9 +606,7 @@ export default function ProductsPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Price
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Stock
-                </th>
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
@@ -655,11 +653,7 @@ export default function ProductsPage() {
                         {formatPrice(product.price * 1.075 + (product.profit || 0))}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-600">
-                        {product.stockCount ?? "N/A"}
-                      </span>
-                    </td>
+
                     <td className="px-6 py-4 whitespace-nowrap">
                       {product.inStock ? (
                         <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
