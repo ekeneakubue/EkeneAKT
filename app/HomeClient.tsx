@@ -138,9 +138,10 @@ export default function HomeClient() {
 
     const heroSlides = [
         { id: 1, image: "/images/hero1.webp", alt: "Premium Lighting Collection" },
-        { id: 2, image: "/images/hero2.webp", alt: "Modern LED Solutions" },
-        { id: 3, image: "/images/hero3.png", alt: "Elegant Chandeliers" },
-        { id: 4, image: "/images/hero4.webp", alt: "Smart Home Lighting" }
+        { id: 2, image: "/images/hero4.jpg", alt: "AKT Electric Bikes" },
+        { id: 3, image: "/images/hero2.webp", alt: "Modern LED Solutions" },
+        { id: 4, image: "/images/hero3.png", alt: "Elegant Chandeliers" },
+        { id: 5, image: "/images/hero4.webp", alt: "Smart Home Lighting" }
     ];
 
     useEffect(() => {
