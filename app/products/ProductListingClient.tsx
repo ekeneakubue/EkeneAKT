@@ -385,16 +385,16 @@ export default function ProductListingClient() {
                                     {/* All Products */}
                                     <button
                                         onClick={() => setSelectedCategory("all")}
-                                        className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${selectedCategory === "all"
+                                        className={`w-full flex items-center justify-between p-2 rounded-xl transition-all ${selectedCategory === "all"
                                             ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg"
                                             : "hover:bg-blue-50 text-gray-700"
                                             }`}
                                     >
-                                        <div className="flex items-center gap-3">
-                                            <allProductsOption.icon size={20} />
-                                            <span className="font-semibold">{allProductsOption.name}</span>
+                                        <div className="flex items-center gap-2">
+                                            <allProductsOption.icon size={16} />
+                                            <span className="font-semibold text-xs whitespace-nowrap">{allProductsOption.name}</span>
                                         </div>
-                                        <span className={`text-sm px-2 py-1 rounded-lg ${selectedCategory === "all"
+                                        <span className={`text-[10px] px-1.5 py-0.5 rounded-lg ${selectedCategory === "all"
                                             ? "bg-white/20"
                                             : "bg-amber-100 text-amber-700"
                                             }`}>
@@ -413,22 +413,22 @@ export default function ProductListingClient() {
                                                         setSelectedCategory(category.name);
                                                     }
                                                 }}
-                                                className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${selectedCategory === category.name
+                                                className={`w-full flex items-center justify-between p-2 rounded-xl transition-all ${selectedCategory === category.name
                                                     ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg"
                                                     : "hover:bg-blue-50 text-gray-700"
                                                     }`}
                                             >
-                                                <div className="flex items-center gap-3 flex-1">
+                                                <div className="flex items-center gap-2 flex-1 min-w-0">
                                                     {category.subcategories.length > 0 && (
                                                         <ChevronRight
-                                                            size={16}
-                                                            className={`transition-transform ${expandedCategories.has(category.id) ? "rotate-90" : ""
+                                                            size={14}
+                                                            className={`transition-transform flex-shrink-0 ${expandedCategories.has(category.id) ? "rotate-90" : ""
                                                                 }`}
                                                         />
                                                     )}
-                                                    <span className="font-semibold text-sm">{category.name}</span>
+                                                    <span className="font-semibold text-xs whitespace-nowrap overflow-hidden text-ellipsis">{category.name}</span>
                                                 </div>
-                                                <span className={`text-xs px-2 py-1 rounded-lg ${selectedCategory === category.name
+                                                <span className={`text-[10px] px-1.5 py-0.5 rounded-lg ml-2 ${selectedCategory === category.name
                                                     ? "bg-white/20"
                                                     : "bg-amber-100 text-amber-700"
                                                     }`}>
@@ -443,14 +443,14 @@ export default function ProductListingClient() {
                                                         <button
                                                             key={subcategory.id}
                                                             onClick={() => setSelectedCategory(subcategory.name)}
-                                                            className={`w-full flex items-center justify-between p-2.5 rounded-lg transition-all text-sm ${selectedCategory === subcategory.name
+                                                            className={`w-full flex items-center justify-between p-2 rounded-lg transition-all text-xs ${selectedCategory === subcategory.name
                                                                 ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-md"
                                                                 : "hover:bg-amber-50 text-gray-600"
                                                                 }`}
                                                         >
-                                                            <span className="font-medium">{subcategory.name}</span>
+                                                            <span className="font-medium whitespace-nowrap overflow-hidden text-ellipsis mr-2">{subcategory.name}</span>
                                                             {subcategory.count > 0 && (
-                                                                <span className={`text-xs px-2 py-0.5 rounded ${selectedCategory === subcategory.name
+                                                                <span className={`text-[10px] px-1.5 py-0.5 rounded ${selectedCategory === subcategory.name
                                                                     ? "bg-white/20"
                                                                     : "bg-amber-100 text-amber-700"
                                                                     }`}>
