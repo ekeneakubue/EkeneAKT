@@ -271,7 +271,7 @@ export default function HomeClient() {
                         </div>
                     </div>
                     <div className="relative h-[40vh] md:h-[70vh] mt-8 md:mt-0">
-                        <div className="relative bg-gradient-to-br from-blue-800/40 to-blue-900/40 backdrop-blur-xl rounded-3xl p-4 md:p-8 shadow-2xl border border-amber-400/20 aspect-square group overflow-hidden">
+                        <div className="relative bg-gradient-to-br from-blue-800/40 to-blue-900/40 backdrop-blur-xl rounded-3xl p-4 md:p-8 shadow-2xl border border-amber-400/20 w-full h-full group overflow-hidden">
                             {heroSlides.map((slide, index) => (
                                 <div key={slide.id} className={`absolute inset-0 transition-opacity duration-700 ${index === currentSlide ? "opacity-100" : "opacity-0"}`}>
                                     <img src={slide.image} alt={slide.alt} className="w-full h-full object-cover rounded-2xl" />
