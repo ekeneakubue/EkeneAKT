@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import ProductDetailsClient from "./ProductDetailsClient";
 import { prisma } from "../../../lib/prisma";
+import { headers } from "next/headers";
 
 // Helper function to fetch product data for metadata
 async function getProduct(id: string) {
@@ -51,16 +52,27 @@ export async function generateMetadata(
     }
   }
 
+  // Get host for absolute URLs
+  const headersList = await headers();
+  const host = headersList.get("host") || "ekeneakt.com";
+  const protocol = host.includes("localhost") ? "http" : "https";
+  const baseUrl = `${protocol}://${host}`;
+
   if (mainImage) {
     if (mainImage.startsWith('http')) {
       imageUrl = mainImage;
     } else if (mainImage.startsWith('data:') || mainImage.length > 512) {
       // If it's a data URL or a very long string (likely base64), use the image proxy
-      imageUrl = `/api/products/${id}/image`;
+      imageUrl = `${baseUrl}/api/products/${id}/image`;
     } else {
       // Treat as a relative path
-      imageUrl = mainImage.startsWith('/') ? mainImage : `/${mainImage}`;
+      // Ensure it starts with /
+      const path = mainImage.startsWith('/') ? mainImage : `/${mainImage}`;
+      imageUrl = `${baseUrl}${path}`;
     }
+  } else {
+    // Fallback image absolute URL
+    imageUrl = `${baseUrl}/og-image.jpg`;
   }
 
   const url = `/products/${id}`;
