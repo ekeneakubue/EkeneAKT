@@ -11,6 +11,7 @@ async function getProduct(id: string) {
         name: true,
         description: true,
         image: true,
+        images: true,
       }
     });
   } catch (error) {
@@ -36,15 +37,29 @@ export async function generateMetadata(
 
   // Determine the correct image URL for social media
   let imageUrl = "/og-image.jpg";
-  if (product.image) {
-    if (product.image.startsWith('http')) {
-      imageUrl = product.image;
-    } else if (product.image.startsWith('data:') || product.image.length > 512) {
+
+  let mainImage = product.image;
+  if (!mainImage && product.images) {
+    let imgs: any = product.images;
+    if (typeof imgs === 'string') {
+      try {
+        imgs = JSON.parse(imgs);
+      } catch { }
+    }
+    if (Array.isArray(imgs) && imgs.length > 0) {
+      mainImage = imgs[0];
+    }
+  }
+
+  if (mainImage) {
+    if (mainImage.startsWith('http')) {
+      imageUrl = mainImage;
+    } else if (mainImage.startsWith('data:') || mainImage.length > 512) {
       // If it's a data URL or a very long string (likely base64), use the image proxy
       imageUrl = `/api/products/${id}/image`;
     } else {
       // Treat as a relative path
-      imageUrl = product.image.startsWith('/') ? product.image : `/${product.image}`;
+      imageUrl = mainImage.startsWith('/') ? mainImage : `/${mainImage}`;
     }
   }
 

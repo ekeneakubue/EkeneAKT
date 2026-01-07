@@ -16,24 +16,39 @@ export async function GET(
 
         const product = await prisma.product.findUnique({
             where: { id },
-            select: { image: true },
+            select: { image: true, images: true },
         });
 
-        if (!product || !product.image) {
+        let imageToServe = product?.image;
+
+        if (!imageToServe && product?.images) {
+            const imgs = product.images as any;
+            if (Array.isArray(imgs) && imgs.length > 0) {
+                imageToServe = imgs[0];
+            } else if (typeof imgs === 'string') {
+                // specific handling if prisma returns string for Json type
+                try {
+                    const parsed = JSON.parse(imgs);
+                    if (Array.isArray(parsed) && parsed.length > 0) imageToServe = parsed[0];
+                } catch { }
+            }
+        }
+
+        if (!imageToServe) {
             return new NextResponse("Image Not Found", { status: 404 });
         }
 
         // Check if it's already a URL
-        if (product.image.startsWith('http')) {
-            return NextResponse.redirect(product.image);
+        if (imageToServe.startsWith('http')) {
+            return NextResponse.redirect(imageToServe);
         }
 
         let contentType = "image/jpeg";
-        let base64Data = product.image;
+        let base64Data = imageToServe;
 
         // Handle data URL format (data:image/png;base64,...)
-        if (product.image.startsWith("data:")) {
-            const parts = product.image.split(",");
+        if (imageToServe.startsWith("data:")) {
+            const parts = imageToServe.split(",");
             if (parts.length > 1) {
                 const mimeMatch = parts[0].match(/data:(.*?);/);
                 if (mimeMatch) {
