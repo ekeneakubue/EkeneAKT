@@ -17,7 +17,8 @@ import {
     MessageCircle,
     ShieldCheck,
     MapPin,
-    Phone
+    Phone,
+    Share2
 } from "lucide-react";
 import { useCart } from "../../../contexts/CartContext";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -197,6 +198,29 @@ export default function ProductDetailsClient() {
         .filter((_, idx) => idx !== selectedImageIndex)
         .slice(0, 3);
 
+    const handleShare = async () => {
+        if (!product) return;
+        const shareData = {
+            title: product.name,
+            text: product.description || `Check out ${product.name} on AKT Lighting`,
+            url: window.location.href,
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                console.log("Error sharing:", err);
+            }
+        } else {
+            // Fallback to clipboard
+            navigator.clipboard.writeText(window.location.href);
+            setToastMessage("Link copied to clipboard!");
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 3000);
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center">
@@ -236,13 +260,20 @@ export default function ProductDetailsClient() {
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
             {/* Header Navigation */}
             <header className="bg-white border-b border-gray-200">
-                <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4">
+                <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 flex justify-between items-center">
                     <button
                         onClick={() => router.back()}
                         className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition-colors font-medium"
                     >
                         <ArrowLeft size={20} />
                         <span>Back</span>
+                    </button>
+                    <button
+                        onClick={handleShare}
+                        className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition-colors bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg text-sm font-medium"
+                    >
+                        <Share2 size={18} />
+                        <span>Share</span>
                     </button>
                 </div>
             </header>
@@ -295,7 +326,6 @@ export default function ProductDetailsClient() {
                                 </div>
                             )}
                         </div>
-
                         {/* Product Details */}
                         <div className="space-y-6">
                             {/* Product Title */}
