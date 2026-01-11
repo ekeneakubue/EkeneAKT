@@ -437,10 +437,10 @@ export default function HomeClient() {
                             </p>
                             <div className="flex justify-center md:justify-start gap-3">
                                 {[
-                                    { id: 'facebook', icon: Facebook, color: 'bg-gradient-to-br from-blue-600 to-blue-700 shadow-blue-500/20', href: 'https://facebook.com' },
+                                    { id: 'facebook', icon: Facebook, color: 'bg-gradient-to-br from-blue-600 to-blue-700 shadow-blue-500/20', href: 'https://web.facebook.com/GigoPlanet' },
                                     { id: 'whatsapp', icon: MessageCircle, color: 'bg-gradient-to-br from-green-500 to-green-600 shadow-green-500/20', href: 'https://wa.me/2348032744865' },
-                                    { id: 'instagram', icon: Instagram, color: 'bg-gradient-to-br from-pink-500 via-purple-500 to-amber-500 shadow-purple-500/20', href: 'https://instagram.com' },
-                                    { id: 'linkedin', icon: Linkedin, color: 'bg-gradient-to-br from-blue-700 to-blue-800 shadow-blue-800/20', href: 'https://linkedin.com' }
+                                    { id: 'instagram', icon: Instagram, color: 'bg-gradient-to-br from-pink-500 via-purple-500 to-amber-500 shadow-purple-500/20', href: 'https://www.instagram.com/ekeneakt' },
+                                    // { id: 'linkedin', icon: Linkedin, color: 'bg-gradient-to-br from-blue-700 to-blue-800 shadow-blue-800/20', href: 'https://linkedin.com' }
                                 ].map((social) => (
                                     <a
                                         key={social.id}
