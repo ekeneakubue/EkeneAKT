@@ -8,6 +8,7 @@ import Script from "next/script";
 import { ShoppingCart, Plus, Minus, X, Trash2, ArrowLeft, Lightbulb, Zap, Loader2, MapPin, Phone, Mail, Facebook, Instagram, Linkedin, MessageCircle, ShieldCheck } from "lucide-react";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
+import Footer from "../../components/Footer";
 
 // Helper function to format numbers with commas
 const formatPrice = (amount: number): string => {
@@ -306,7 +307,7 @@ export default function CartPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 overflow-x-hidden w-full">
       {/* Load Paystack Script */}
       <Script
         src="https://js.paystack.co/v1/inline.js"
@@ -318,7 +319,7 @@ export default function CartPage() {
       />
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-blue-100 shadow-lg">
-        <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-2.5 px-4 md:px-8 lg:px-12">
+        <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-2.5">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <Link href="/" className="flex items-center gap-2 hover:text-amber-300 transition text-sm w-fit">
               <ArrowLeft size={14} />
@@ -329,13 +330,13 @@ export default function CartPage() {
 
         <nav className="container mx-auto px-4 md:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="bg-amber-500 p-1.5 rounded-full">
-                <img src="/images/logo.jpg" alt="logo" className="w-15 h-15 rounded-full" />
+            <Link href="/" className="flex items-center gap-2 md:gap-3">
+              <div className="bg-amber-500 p-1 md:p-1.5 rounded-full">
+                <img src="/images/logo.jpg" alt="logo" className="w-10 h-10 md:w-16 md:h-16 rounded-full" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">AKT</h1>
-                <p className="text-xs font-semibold text-amber-600 tracking-wider">LIGHTING</p>
+                <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">AKT</h1>
+                <p className="text-[10px] md:text-xs font-semibold text-amber-600 tracking-wider">LIGHTING</p>
               </div>
             </Link>
 
@@ -352,14 +353,14 @@ export default function CartPage() {
       </header>
 
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-8 md:py-10 lg:py-12 px-4 md:px-8 lg:px-12">
+      <section className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-8 md:py-10 lg:py-12">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex items-center gap-4 mb-4">
             <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-3 rounded-xl shadow-xl">
               <ShoppingCart size={32} className="text-white" />
             </div>
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold">Shopping Cart</h1>
+              <h1 className="text-3xl md:text-5xl font-bold">Shopping Cart</h1>
               <p className="text-xl text-blue-200 mt-2">
                 {cart.length === 0
                   ? "Your cart is empty"
@@ -375,7 +376,7 @@ export default function CartPage() {
         {cart.length === 0 ? (
           /* Empty Cart State */
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-xl p-12 md:p-16 text-center border-2 border-blue-100">
+            <div className="bg-white rounded-2xl shadow-xl p-8 md:p-16 text-center border-2 border-blue-100">
               <div className="bg-gradient-to-br from-blue-100 to-amber-100 w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-6">
                 <ShoppingCart size={64} className="text-blue-600" />
               </div>
@@ -400,7 +401,7 @@ export default function CartPage() {
             </div>
           </div>
         ) : (
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 w-full max-w-full">
             {/* Cart Items */}
             <div className="lg:col-span-2 space-y-4">
               {/* Cart Header */}
@@ -422,11 +423,11 @@ export default function CartPage() {
                 {cart.map((item: any) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-2xl shadow-lg p-3 md:p-6 border-2 border-gray-100 hover:border-amber-300 transition-all duration-300"
+                    className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-2 border-gray-100 hover:border-amber-300 transition-all duration-300"
                   >
-                    <div className="flex gap-3 md:gap-4">
+                    <div className="flex gap-2 md:gap-4">
                       {/* Product Image */}
-                      <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-amber-50 rounded-xl w-24 h-24 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-gray-200">
+                      <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-amber-50 rounded-xl w-20 h-20 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-gray-200">
                         {(item.image || productImages[item.id]) ? (
                           <Image
                             src={item.image || productImages[item.id] || ''}
@@ -448,30 +449,30 @@ export default function CartPage() {
                       </div>
 
                       {/* Product Details */}
-                      <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4">
+                      <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4">
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-base md:text-xl font-bold text-gray-900 mb-1 truncate">{item.name}</h3>
-                          <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
+                          <h3 className="text-sm md:text-xl font-bold text-gray-900 mb-0.5 line-clamp-2 h-10 md:h-auto leading-tight">{item.name}</h3>
+                          <p className="text-lg md:text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
                             ₦{formatPrice(item.price * 1.075 + item.profit)}
                           </p>
-                          <p className="text-[10px] md:text-xs text-gray-600">per unit ({item.minQuantity} pieces)</p>
-                          <p className="text-xs md:text-sm text-gray-600 mt-1 font-semibold">
+                          <p className="text-[10px] md:text-xs text-gray-600">per unit ({item.minQuantity} pcs)</p>
+                          <p className="text-xs md:text-sm text-gray-600 mt-0.5 font-semibold">
                             ₦{formatPrice((item.price * 1.075 + item.profit) * item.minQuantity * item.quantity)} total
                           </p>
                         </div>
 
                         {/* Quantity Controls */}
-                        <div className="flex items-center justify-between gap-3 mt-2 md:mt-0">
-                          <div className="flex items-center gap-2 bg-blue-50 rounded-xl p-1 border-2 border-blue-200">
+                        <div className="flex items-center justify-between gap-2 mt-1 md:mt-0">
+                          <div className="flex items-center gap-1 md:gap-2 bg-blue-50 rounded-xl p-0.5 border-2 border-blue-200">
                             <button
                               onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                              className="p-3 md:p-2 hover:bg-blue-100 rounded-lg transition text-blue-700 hover:text-blue-900 touch-manipulation"
+                              className="p-2 md:p-2 hover:bg-blue-100 rounded-lg transition text-blue-700 hover:text-blue-900 touch-manipulation"
                               aria-label="Decrease quantity"
                             >
-                              <Minus size={16} />
+                              <Minus size={14} />
                             </button>
-                            <div className="w-12 md:w-16 text-center">
-                              <span className="font-bold text-gray-900 text-base md:text-lg block">
+                            <div className="w-8 md:w-16 text-center">
+                              <span className="font-bold text-gray-900 text-sm md:text-lg block">
                                 {item.quantity}
                               </span>
                               <span className="text-[10px] md:text-xs text-gray-600">
@@ -480,20 +481,20 @@ export default function CartPage() {
                             </div>
                             <button
                               onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                              className="p-3 md:p-2 hover:bg-blue-100 rounded-lg transition text-blue-700 hover:text-blue-900 touch-manipulation"
+                              className="p-2 md:p-2 hover:bg-blue-100 rounded-lg transition text-blue-700 hover:text-blue-900 touch-manipulation"
                               aria-label="Increase quantity"
                             >
-                              <Plus size={16} />
+                              <Plus size={14} />
                             </button>
                           </div>
 
                           {/* Remove Button */}
                           <button
                             onClick={() => removeFromCart(item.id)}
-                            className="p-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition border-2 border-red-200 hover:border-red-300 md:ml-2 touch-manipulation"
+                            className="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition border-2 border-red-200 hover:border-red-300 md:ml-2 touch-manipulation"
                             aria-label="Remove item"
                           >
-                            <Trash2 size={18} />
+                            <Trash2 size={16} />
                           </button>
                         </div>
                       </div>
@@ -515,7 +516,7 @@ export default function CartPage() {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="sticky top-32">
-                <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-blue-100">
+                <div className="bg-white rounded-2xl shadow-xl p-5 md:p-6 border-2 border-blue-100">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                     <Zap size={24} className="text-amber-600" />
                     Order Summary
@@ -533,7 +534,7 @@ export default function CartPage() {
                         onChange={(e) => setShippingAddress(e.target.value)}
                         placeholder="Enter your complete shipping address"
                         rows={3}
-                        className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition resize-none"
+                        className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition resize-none text-base"
                         required
                       />
                     </div>
@@ -547,7 +548,7 @@ export default function CartPage() {
                         value={contactNumber}
                         onChange={(e) => setContactNumber(e.target.value)}
                         placeholder="Enter your phone number"
-                        className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
+                        className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition text-base"
                         required
                       />
                     </div>
@@ -609,15 +610,15 @@ export default function CartPage() {
                 </div>
 
                 {/* Promo Code */}
-                <div className="bg-gradient-to-br from-blue-50 to-amber-50 rounded-2xl shadow-lg p-6 mt-4 border-2 border-blue-200">
+                <div className="bg-gradient-to-br from-blue-50 to-amber-50 rounded-2xl shadow-lg p-5 md:p-6 mt-4 border-2 border-blue-200">
                   <h3 className="font-bold text-gray-900 mb-3">Have a promo code?</h3>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <input
                       type="text"
                       placeholder="Enter code"
-                      className="flex-1 px-4 py-2 border-2 border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400"
+                      className="w-full sm:flex-1 px-4 py-3 border-2 border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition text-base"
                     />
-                    <button className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-2 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-900 transition">
+                    <button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-900 transition shadow-md active:scale-95">
                       Apply
                     </button>
                   </div>
@@ -627,6 +628,39 @@ export default function CartPage() {
           </div>
         )}
       </div>
+
+      {/* Bottom Spacer for Sticky Bar */}
+      {cart.length > 0 && <div className="h-24 lg:hidden"></div>}
+
+      {/* Sticky Bottom Checkout Bar for Mobile */}
+      {cart.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 md:p-4 shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.1)] z-40 lg:hidden safe-area-bottom">
+          <div className="flex items-center justify-between gap-3 max-w-2xl mx-auto">
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">Total</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
+                ₦{formatPrice(total)}
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                // Scroll to order summary if on mobile, or handle checkout if data is ready
+                const summaryElement = document.querySelector('.lg\\:col-span-1');
+                if (summaryElement && (!shippingAddress || !contactNumber)) {
+                  summaryElement.scrollIntoView({ behavior: 'smooth' });
+                  // Flash the inputs to draw attention?
+                } else {
+                  handleCheckout();
+                }
+              }}
+              disabled={isProcessingPayment}
+              className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 text-white px-6 py-3 rounded-xl font-bold hover:from-amber-600 hover:to-amber-700 transition shadow-lg active:scale-95 disabled:opacity-50 disabled:scale-100"
+            >
+              {isProcessingPayment ? <Loader2 size={20} className="animate-spin" /> : 'Checkout'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Clear Cart Confirmation Modal */}
       {showClearConfirm && (
@@ -659,7 +693,7 @@ export default function CartPage() {
         </div>
       )}
       {/* Newsletter */}
-      <section className="py-12 md:py-16 lg:py-20 px-4 md:px-8 lg:px-12 bg-gradient-to-br from-slate-50 via-blue-50 to-amber-50">
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-amber-50">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto bg-gradient-to-br from-white to-blue-50/50 rounded-2xl md:rounded-3xl shadow-2xl p-6 md:p-10 lg:p-12 text-center border-2 border-amber-200/50 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-amber-200 rounded-full blur-3xl opacity-20"></div>
@@ -709,111 +743,7 @@ export default function CartPage() {
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-gray-300 py-12 md:py-14 lg:py-16 px-4 md:px-8 lg:px-12 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
-
-        <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
-            <div className="text-center md:text-left">
-              <div className="flex items-center justify-center md:justify-start gap-2 md:gap-3 mb-6">
-                <div className="bg-amber-500 p-1 md:p-1.5 rounded-full">
-                  <img src="/images/logo.jpg" alt="logo" className="w-10 h-10 md:w-15 md:h-15 rounded-full" />
-                </div>
-                <div>
-                  <h3 className="text-lg md:text-xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">EKENE-AKT</h3>
-                  <p className="text-[10px] md:text-xs font-semibold text-amber-500 tracking-wider">LIGHTING</p>
-                </div>
-              </div>
-              <p className="text-sm md:text-base text-gray-400 leading-relaxed mb-6">
-                Illuminate your world with premium lighting solutions designed for modern living.
-              </p>
-              <div className="flex justify-center md:justify-start gap-3">
-                {[
-                  { id: 'facebook', icon: Facebook, color: 'bg-gradient-to-br from-blue-600 to-blue-700 shadow-blue-500/20', href: 'https://facebook.com' },
-                  { id: 'whatsapp', icon: MessageCircle, color: 'bg-gradient-to-br from-green-500 to-green-600 shadow-green-500/20', href: 'https://wa.me/2348032744865' },
-                  { id: 'instagram', icon: Instagram, color: 'bg-gradient-to-br from-pink-500 via-purple-500 to-amber-500 shadow-purple-500/20', href: 'https://instagram.com' },
-                  { id: 'linkedin', icon: Linkedin, color: 'bg-gradient-to-br from-blue-700 to-blue-800 shadow-blue-800/20', href: 'https://linkedin.com' }
-                ].map((social) => (
-                  <a
-                    key={social.id}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`w-11 h-11 ${social.color} rounded-xl transition-all duration-300 flex items-center justify-center shadow-lg hover:brightness-110 hover:scale-110 transform text-white border border-white/10`}
-                  >
-                    <span className="sr-only">{social.id}</span>
-                    <social.icon size={20} />
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            <div className="text-center md:text-left">
-              <h4 className="text-amber-400 font-bold mb-4 md:mb-6 text-base md:text-lg">Quick Links</h4>
-              <ul className="space-y-3">
-                {['About Us', 'Our Products', 'Contact', 'Blog', 'FAQs', 'Careers'].map((link) => (
-                  <li key={link}>
-                    <a href="#" className="hover:text-amber-400 transition-colors duration-200 inline-block hover:translate-x-1 transform text-sm md:text-base">{link}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="text-center md:text-left">
-              <h4 className="text-amber-400 font-bold mb-4 md:mb-6 text-base md:text-lg">Categories</h4>
-              <ul className="space-y-3">
-                {['Home Lighting', 'Commercial', 'LED Solutions', 'Decorative', 'Outdoor', 'Smart Lighting'].map((category) => (
-                  <li key={category}>
-                    <a href="#" className="hover:text-amber-400 transition-colors duration-200 inline-block hover:translate-x-1 transform text-sm md:text-base">{category}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="text-center md:text-left">
-              <h4 className="text-amber-400 font-bold mb-4 md:mb-6 text-base md:text-lg">Contact Us</h4>
-              <ul className="space-y-4">
-                <li className="flex items-start justify-center md:justify-start gap-3 group">
-                  <MapPin size={18} className="text-amber-500 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform md:w-5 md:h-5" />
-                  <span className="group-hover:text-amber-100 transition text-sm md:text-base">Alaba International Market, Ojo, Lagos State, Nigeria</span>
-                </li>
-                <li className="flex items-start justify-center md:justify-start gap-3 group">
-                  <MapPin size={18} className="text-amber-500 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform md:w-5 md:h-5" />
-                  <span className="group-hover:text-amber-100 transition text-sm md:text-base">Electrical Main Market, Obosi, Anambra State, Nigeria</span>
-                </li>
-                <li className="flex items-center justify-center md:justify-start gap-3 group">
-                  <Phone size={18} className="text-amber-500 flex-shrink-0 group-hover:scale-110 transition-transform md:w-5 md:h-5" />
-                  <span className="group-hover:text-amber-100 transition text-sm md:text-base">+234 803 274 4865</span>
-                </li>
-                <li className="flex items-center justify-center md:justify-start gap-3 group">
-                  <Mail size={18} className="text-amber-500 flex-shrink-0 group-hover:scale-110 transition-transform md:w-5 md:h-5" />
-                  <span className="group-hover:text-amber-100 transition text-sm md:text-base">ekeneakt@gmail.com</span>
-                </li>
-                <li className="pt-2 flex justify-center md:justify-start">
-                  <Link
-                    href="/admin"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs md:text-sm font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-300 border border-slate-700 hover:border-slate-600"
-                  >
-                    <ShieldCheck size={16} />
-                    <span>Admin Access</span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm">
-              © 2025 <span className="text-amber-400 font-semibold">AKT Lighting</span>. All rights reserved.
-            </p>
-            <div className="flex gap-6 text-sm">
-              <a href="#" className="hover:text-amber-400 transition">Privacy Policy</a>
-              <a href="#" className="hover:text-amber-400 transition">Terms of Service</a>
-              <a href="#" className="hover:text-amber-400 transition">Cookie Policy</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       {/* Floating WhatsApp Button */}
       <a
