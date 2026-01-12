@@ -476,7 +476,7 @@ export default function CartPage() {
                                 {item.quantity}
                               </span>
                               <span className="text-[10px] md:text-xs text-gray-600">
-                                {item.quantity === 1 ? 'ctn' : 'ctns'}
+                                {item.quantity === 1 ? 'carton' : 'cartons'}
                               </span>
                             </div>
                             <button
