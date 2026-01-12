@@ -813,9 +813,10 @@ export default function ProductListingClient() {
                                                 </div>
                                                 <button
                                                     onClick={() => handleAddToCart(product)}
-                                                    className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-300"
+                                                    className="p-3 bg-blue-100 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md active:scale-95 touch-manipulation"
+                                                    aria-label={`Add ${product.name} to cart`}
                                                 >
-                                                    <ShoppingCart size={20} />
+                                                    <ShoppingCart size={22} />
                                                 </button>
                                             </div>
                                             <button

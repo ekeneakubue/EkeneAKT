@@ -422,25 +422,25 @@ export default function CartPage() {
                 {cart.map((item: any) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-2 border-gray-100 hover:border-amber-300 transition-all duration-300"
+                    className="bg-white rounded-2xl shadow-lg p-3 md:p-6 border-2 border-gray-100 hover:border-amber-300 transition-all duration-300"
                   >
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex gap-3 md:gap-4">
                       {/* Product Image */}
-                      <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-amber-50 rounded-xl w-full sm:w-32 h-32 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-gray-200">
+                      <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-amber-50 rounded-xl w-24 h-24 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-gray-200">
                         {(item.image || productImages[item.id]) ? (
                           <Image
                             src={item.image || productImages[item.id] || ''}
                             alt={item.name}
                             fill
-                            className="object-contain p-3"
+                            className="object-contain p-2"
                             unoptimized
                           />
                         ) : (
                           <>
                             <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-amber-400/10"></div>
                             <Lightbulb
-                              size={64}
-                              className="text-blue-400 relative z-10"
+                              size={40}
+                              className="text-blue-400 relative z-10 md:w-16 md:h-16"
                               strokeWidth={1.5}
                             />
                           </>
@@ -448,55 +448,52 @@ export default function CartPage() {
                       </div>
 
                       {/* Product Details */}
-                      <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="flex-1">
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">{item.name}</h3>
-                          <p className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
+                      <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-base md:text-xl font-bold text-gray-900 mb-1 truncate">{item.name}</h3>
+                          <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
                             ₦{formatPrice(item.price * 1.075 + item.profit)}
                           </p>
-                          <p className="text-xs text-gray-600">per unit ({item.minQuantity} pieces)</p>
-                          <p className="text-sm text-gray-600 mt-2 font-semibold">
+                          <p className="text-[10px] md:text-xs text-gray-600">per unit ({item.minQuantity} pieces)</p>
+                          <p className="text-xs md:text-sm text-gray-600 mt-1 font-semibold">
                             ₦{formatPrice((item.price * 1.075 + item.profit) * item.minQuantity * item.quantity)} total
-                            <span className="text-xs font-normal text-gray-500 ml-2">
-                              ({item.quantity} {item.quantity === 1 ? 'carton' : 'cartons'} × {item.minQuantity} pieces)
-                            </span>
                           </p>
                         </div>
 
                         {/* Quantity Controls */}
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center justify-between gap-3 mt-2 md:mt-0">
                           <div className="flex items-center gap-2 bg-blue-50 rounded-xl p-1 border-2 border-blue-200">
                             <button
                               onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                              className="p-2 hover:bg-blue-100 rounded-lg transition text-blue-700 hover:text-blue-900"
+                              className="p-3 md:p-2 hover:bg-blue-100 rounded-lg transition text-blue-700 hover:text-blue-900 touch-manipulation"
                               aria-label="Decrease quantity"
                             >
-                              <Minus size={18} />
+                              <Minus size={16} />
                             </button>
-                            <div className="w-16 text-center">
-                              <span className="font-bold text-gray-900 text-lg block">
+                            <div className="w-12 md:w-16 text-center">
+                              <span className="font-bold text-gray-900 text-base md:text-lg block">
                                 {item.quantity}
                               </span>
-                              <span className="text-xs text-gray-600">
-                                {item.quantity === 1 ? 'carton' : 'cartons'}
+                              <span className="text-[10px] md:text-xs text-gray-600">
+                                {item.quantity === 1 ? 'ctn' : 'ctns'}
                               </span>
                             </div>
                             <button
                               onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                              className="p-2 hover:bg-blue-100 rounded-lg transition text-blue-700 hover:text-blue-900"
+                              className="p-3 md:p-2 hover:bg-blue-100 rounded-lg transition text-blue-700 hover:text-blue-900 touch-manipulation"
                               aria-label="Increase quantity"
                             >
-                              <Plus size={18} />
+                              <Plus size={16} />
                             </button>
                           </div>
 
                           {/* Remove Button */}
                           <button
                             onClick={() => removeFromCart(item.id)}
-                            className="p-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition border-2 border-red-200 hover:border-red-300"
+                            className="p-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition border-2 border-red-200 hover:border-red-300 md:ml-2 touch-manipulation"
                             aria-label="Remove item"
                           >
-                            <Trash2 size={20} />
+                            <Trash2 size={18} />
                           </button>
                         </div>
                       </div>
