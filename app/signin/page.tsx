@@ -48,19 +48,19 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center px-4 py-12 transition-colors duration-300">
       <div className="w-full max-w-md">
         {/* Back to Home Link */}
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-blue-700 hover:text-blue-900 mb-6 transition"
+          className="inline-flex items-center gap-2 text-blue-700 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mb-6 transition"
         >
           <ArrowLeft size={18} />
           <span>Back to Home</span>
         </Link>
 
         {/* Sign In Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-blue-100">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 border-2 border-blue-100 dark:border-slate-700">
           {/* Logo/Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-3 mb-4">
@@ -72,10 +72,10 @@ export default function SignInPage() {
                 <p className="text-xs font-semibold text-amber-600 tracking-wider">LIGHTING</p>
               </div>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
               {isSignUp ? "Create Account" : "Sign In"}
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               {isSignUp
                 ? "Create an account to access your cart"
                 : "Sign in to access your cart and continue shopping"}
@@ -84,7 +84,7 @@ export default function SignInPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+            <div className="bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-6">
               {error}
             </div>
           )}
@@ -93,7 +93,7 @@ export default function SignInPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {isSignUp && (
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Full Name
                 </label>
                 <div className="relative">
@@ -107,7 +107,7 @@ export default function SignInPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your full name"
-                    className="w-full pl-10 pr-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
+                    className="w-full pl-10 pr-4 py-3 border-2 border-blue-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
                     required={isSignUp}
                   />
                 </div>
@@ -115,7 +115,7 @@ export default function SignInPage() {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -129,14 +129,14 @@ export default function SignInPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="w-full pl-10 pr-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
+                  className="w-full pl-10 pr-4 py-3 border-2 border-blue-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -150,7 +150,7 @@ export default function SignInPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={isSignUp ? "Create a password (min 6 characters)" : "Enter your password"}
-                  className="w-full pl-10 pr-12 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
+                  className="w-full pl-10 pr-12 py-3 border-2 border-blue-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
                   required
                   minLength={isSignUp ? 6 : undefined}
                 />
@@ -194,14 +194,14 @@ export default function SignInPage() {
 
           {/* Toggle Sign Up/Sign In */}
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400">
               {isSignUp ? "Already have an account? " : "Don't have an account? "}
               <button
                 onClick={() => {
                   setIsSignUp(!isSignUp);
                   setError("");
                 }}
-                className="text-blue-700 hover:text-blue-900 font-semibold transition"
+                className="text-blue-700 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition"
               >
                 {isSignUp ? "Sign In" : "Sign Up"}
               </button>
@@ -210,11 +210,11 @@ export default function SignInPage() {
         </div>
 
         {/* Additional Info */}
-        <div className="mt-6 text-center text-sm text-gray-600">
+        <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
           <p>By signing in, you agree to our Terms of Service and Privacy Policy</p>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

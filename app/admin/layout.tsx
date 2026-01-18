@@ -89,7 +89,7 @@ export default function AdminLayout({
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
@@ -100,7 +100,7 @@ export default function AdminLayout({
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
       >
         <div className="flex flex-col h-full">
@@ -111,7 +111,7 @@ export default function AdminLayout({
                 <img src="/images/logo.jpg" alt="logo" className="w-8 h-8 rounded-full" />
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 dark:from-blue-400 dark:to-blue-600 bg-clip-text text-transparent">
                   AKT Admin
                 </h1>
                 <p className="text-xs font-semibold text-amber-600 tracking-wider">
@@ -121,7 +121,7 @@ export default function AdminLayout({
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-gray-500 hover:text-gray-700"
+              className="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             >
               <X size={24} />
             </button>
@@ -142,7 +142,7 @@ export default function AdminLayout({
                   onClick={() => setSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive
                     ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg"
-                    : "text-gray-700 hover:bg-blue-50 hover:text-blue-700"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-800 hover:text-blue-700 dark:hover:text-blue-400"
                     }`}
                 >
                   <item.icon size={20} />
@@ -161,14 +161,14 @@ export default function AdminLayout({
             </div>
             <Link
               href="/"
-              className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition mb-2"
+              className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition mb-2"
             >
               <Home size={18} />
               <span className="text-sm font-medium">Back to Store</span>
             </Link>
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+              className="w-full flex items-center gap-3 px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
             >
               <LogOut size={18} />
               <span className="text-sm font-medium">Sign Out</span>
@@ -180,7 +180,7 @@ export default function AdminLayout({
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
+        <header className="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between px-4 py-4 lg:px-8">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -189,7 +189,7 @@ export default function AdminLayout({
               <Menu size={24} />
             </button>
             <div className="flex-1 lg:flex-none">
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 {navigation.find((item) => pathname === item.href || pathname?.startsWith(item.href + "/"))?.name || "Dashboard"}
               </h2>
             </div>
@@ -208,7 +208,7 @@ export default function AdminLayout({
                     </span>
                   </div>
                 )}
-                <span className="font-medium">{user?.name || "Admin"}</span>
+                <span className="font-medium text-gray-900 dark:text-gray-200">{user?.name || "Admin"}</span>
               </div>
             </div>
           </div>

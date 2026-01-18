@@ -307,7 +307,7 @@ export default function CartPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 overflow-x-hidden w-full">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 overflow-x-hidden w-full transition-colors duration-300">
       {/* Load Paystack Script */}
       <Script
         src="https://js.paystack.co/v1/inline.js"
@@ -353,7 +353,7 @@ export default function CartPage() {
       </header>
 
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-8 md:py-10 lg:py-12">
+      <section className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-white py-8 md:py-10 lg:py-12">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex items-center gap-4 mb-4">
             <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-3 rounded-xl shadow-xl">
@@ -376,12 +376,12 @@ export default function CartPage() {
         {cart.length === 0 ? (
           /* Empty Cart State */
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-xl p-8 md:p-16 text-center border-2 border-blue-100">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 md:p-16 text-center border-2 border-blue-100 dark:border-slate-700">
               <div className="bg-gradient-to-br from-blue-100 to-amber-100 w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-6">
                 <ShoppingCart size={64} className="text-blue-600" />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Your cart is empty</h2>
-              <p className="text-gray-600 mb-8 text-lg">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Your cart is empty</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-8 text-lg">
                 Looks like you haven't added any items to your cart yet.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -405,8 +405,8 @@ export default function CartPage() {
             {/* Cart Items */}
             <div className="lg:col-span-2 space-y-4">
               {/* Cart Header */}
-              <div className="bg-white rounded-2xl shadow-lg p-4 border-2 border-blue-100 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900">Cart Items</h2>
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-4 border-2 border-blue-100 dark:border-slate-700 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Cart Items</h2>
                 {cart.length > 0 && (
                   <button
                     onClick={() => setShowClearConfirm(true)}
@@ -423,11 +423,11 @@ export default function CartPage() {
                 {cart.map((item: any) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-2 border-gray-100 hover:border-amber-300 transition-all duration-300"
+                    className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-4 md:p-6 border-2 border-gray-100 hover:border-amber-300 dark:border-slate-700 dark:hover:border-amber-500 transition-all duration-300"
                   >
                     <div className="flex gap-2 md:gap-4">
                       {/* Product Image */}
-                      <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-amber-50 rounded-xl w-20 h-20 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-gray-200">
+                      <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-amber-50 dark:from-slate-700 dark:via-slate-800 dark:to-slate-700 rounded-xl w-20 h-20 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-gray-200 dark:border-slate-600">
                         {(item.image || productImages[item.id]) ? (
                           <Image
                             src={item.image || productImages[item.id] || ''}
@@ -451,37 +451,37 @@ export default function CartPage() {
                       {/* Product Details */}
                       <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4">
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-sm md:text-xl font-bold text-gray-900 mb-0.5 line-clamp-2 h-10 md:h-auto leading-tight">{item.name}</h3>
-                          <p className="text-lg md:text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
+                          <h3 className="text-sm md:text-xl font-bold text-gray-900 dark:text-white mb-0.5 line-clamp-2 h-10 md:h-auto leading-tight">{item.name}</h3>
+                          <p className="text-lg md:text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 dark:from-blue-400 dark:to-blue-600 bg-clip-text text-transparent">
                             ₦{formatPrice(item.price * 1.075 + item.profit)}
                           </p>
-                          <p className="text-[10px] md:text-xs text-gray-600">per unit ({item.minQuantity} pcs)</p>
-                          <p className="text-xs md:text-sm text-gray-600 mt-0.5 font-semibold">
+                          <p className="text-[10px] md:text-xs text-gray-600 dark:text-gray-400">per unit ({item.minQuantity} pcs)</p>
+                          <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-0.5 font-semibold">
                             ₦{formatPrice((item.price * 1.075 + item.profit) * item.minQuantity * item.quantity)} total
                           </p>
                         </div>
 
                         {/* Quantity Controls */}
                         <div className="flex items-center justify-between gap-2 mt-1 md:mt-0">
-                          <div className="flex items-center gap-1 md:gap-2 bg-blue-50 rounded-xl p-0.5 border-2 border-blue-200">
+                          <div className="flex items-center gap-1 md:gap-2 bg-blue-50 dark:bg-slate-700 rounded-xl p-0.5 border-2 border-blue-200 dark:border-slate-600">
                             <button
                               onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                              className="p-2 md:p-2 hover:bg-blue-100 rounded-lg transition text-blue-700 hover:text-blue-900 touch-manipulation"
+                              className="p-2 md:p-2 hover:bg-blue-100 dark:hover:bg-slate-600 rounded-lg transition text-blue-700 dark:text-blue-300 hover:text-blue-900 touch-manipulation"
                               aria-label="Decrease quantity"
                             >
                               <Minus size={14} />
                             </button>
                             <div className="w-8 md:w-16 text-center">
-                              <span className="font-bold text-gray-900 text-sm md:text-lg block">
+                              <span className="font-bold text-gray-900 dark:text-white text-sm md:text-lg block">
                                 {item.quantity}
                               </span>
-                              <span className="text-[10px] md:text-xs text-gray-600">
+                              <span className="text-[10px] md:text-xs text-gray-600 dark:text-gray-400">
                                 {item.quantity === 1 ? 'carton' : 'cartons'}
                               </span>
                             </div>
                             <button
                               onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                              className="p-2 md:p-2 hover:bg-blue-100 rounded-lg transition text-blue-700 hover:text-blue-900 touch-manipulation"
+                              className="p-2 md:p-2 hover:bg-blue-100 dark:hover:bg-slate-600 rounded-lg transition text-blue-700 dark:text-blue-300 hover:text-blue-900 touch-manipulation"
                               aria-label="Increase quantity"
                             >
                               <Plus size={14} />
@@ -491,7 +491,7 @@ export default function CartPage() {
                           {/* Remove Button */}
                           <button
                             onClick={() => removeFromCart(item.id)}
-                            className="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition border-2 border-red-200 hover:border-red-300 md:ml-2 touch-manipulation"
+                            className="p-2 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 rounded-xl transition border-2 border-red-200 dark:border-red-900 hover:border-red-300 md:ml-2 touch-manipulation"
                             aria-label="Remove item"
                           >
                             <Trash2 size={16} />
@@ -506,7 +506,7 @@ export default function CartPage() {
               {/* Continue Shopping */}
               <Link
                 href="/products"
-                className="flex items-center justify-center gap-2 bg-white rounded-2xl shadow-lg p-4 border-2 border-blue-200 text-blue-700 font-semibold hover:bg-blue-50 transition"
+                className="flex items-center justify-center gap-2 bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-4 border-2 border-blue-200 dark:border-slate-600 text-blue-700 dark:text-blue-300 font-semibold hover:bg-blue-50 dark:hover:bg-slate-700 transition"
               >
                 <ArrowLeft size={20} />
                 Continue Shopping
@@ -516,17 +516,17 @@ export default function CartPage() {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="sticky top-32">
-                <div className="bg-white rounded-2xl shadow-xl p-5 md:p-6 border-2 border-blue-100">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-5 md:p-6 border-2 border-blue-100 dark:border-slate-700">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                     <Zap size={24} className="text-amber-600" />
                     Order Summary
                   </h2>
 
                   {/* Shipping Information */}
-                  <div className="space-y-4 mb-6 pb-6 border-b-2 border-blue-200">
+                  <div className="space-y-4 mb-6 pb-6 border-b-2 border-blue-200 dark:border-slate-700">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <MapPin size={16} className="text-blue-600" />
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                        <MapPin size={16} className="text-blue-600 dark:text-blue-400" />
                         Shipping Address
                       </label>
                       <textarea
@@ -534,13 +534,13 @@ export default function CartPage() {
                         onChange={(e) => setShippingAddress(e.target.value)}
                         placeholder="Enter your complete shipping address"
                         rows={3}
-                        className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition resize-none text-base"
+                        className="w-full px-4 py-3 border-2 border-blue-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition resize-none text-base"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <Phone size={16} className="text-blue-600" />
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                        <Phone size={16} className="text-blue-600 dark:text-blue-400" />
                         Contact Number
                       </label>
                       <input
@@ -548,7 +548,7 @@ export default function CartPage() {
                         value={contactNumber}
                         onChange={(e) => setContactNumber(e.target.value)}
                         placeholder="Enter your phone number"
-                        className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition text-base"
+                        className="w-full px-4 py-3 border-2 border-blue-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition text-base"
                         required
                       />
                     </div>
@@ -556,15 +556,15 @@ export default function CartPage() {
 
                   {/* Price Breakdown */}
                   <div className="space-y-4 mb-6">
-                    <div className="flex justify-between text-gray-700">
+                    <div className="flex justify-between text-gray-700 dark:text-gray-300">
                       <span>Subtotal</span>
                       <span className="font-semibold">₦{formatPrice(total)}</span>
                     </div>
 
-                    <div className="border-t-2 border-blue-200 pt-4 mt-4">
+                    <div className="border-t-2 border-blue-200 dark:border-slate-700 pt-4 mt-4">
                       <div className="flex justify-between items-center">
-                        <span className="text-xl font-bold text-gray-900">Total</span>
-                        <span className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
+                        <span className="text-xl font-bold text-gray-900 dark:text-white">Total</span>
+                        <span className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 dark:from-blue-400 dark:to-blue-600 bg-clip-text text-transparent">
                           ₦{formatPrice(total)}
                         </span>
                       </div>
@@ -601,7 +601,7 @@ export default function CartPage() {
                   </button>
 
                   {/* Security Badge */}
-                  <div className="flex items-center justify-center gap-2 text-sm text-gray-600 pt-4 border-t border-gray-200">
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400 pt-4 border-t border-gray-200 dark:border-slate-700">
                     <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
                       <span className="text-white text-xs">✓</span>
                     </div>
@@ -610,13 +610,13 @@ export default function CartPage() {
                 </div>
 
                 {/* Promo Code */}
-                <div className="bg-gradient-to-br from-blue-50 to-amber-50 rounded-2xl shadow-lg p-5 md:p-6 mt-4 border-2 border-blue-200">
-                  <h3 className="font-bold text-gray-900 mb-3">Have a promo code?</h3>
+                <div className="bg-gradient-to-br from-blue-50 to-amber-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-lg p-5 md:p-6 mt-4 border-2 border-blue-200 dark:border-slate-700">
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-3">Have a promo code?</h3>
                   <div className="flex flex-col sm:flex-row gap-3">
                     <input
                       type="text"
                       placeholder="Enter code"
-                      className="w-full sm:flex-1 px-4 py-3 border-2 border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition text-base"
+                      className="w-full sm:flex-1 px-4 py-3 border-2 border-blue-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition text-base"
                     />
                     <button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-900 transition shadow-md active:scale-95">
                       Apply
@@ -634,11 +634,11 @@ export default function CartPage() {
 
       {/* Sticky Bottom Checkout Bar for Mobile */}
       {cart.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 md:p-4 shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.1)] z-40 lg:hidden safe-area-bottom">
+        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-700 p-3 md:p-4 shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.1)] z-40 lg:hidden safe-area-bottom">
           <div className="flex items-center justify-between gap-3 max-w-2xl mx-auto">
             <div className="flex flex-col">
-              <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">Total</span>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Total</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 dark:from-blue-400 dark:to-blue-600 bg-clip-text text-transparent">
                 ₦{formatPrice(total)}
               </span>
             </div>
@@ -665,20 +665,20 @@ export default function CartPage() {
       {/* Clear Cart Confirmation Modal */}
       {showClearConfirm && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-md w-full border-2 border-red-200">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 md:p-8 max-w-md w-full border-2 border-red-200 dark:border-red-900">
             <div className="text-center mb-6">
               <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Trash2 size={32} className="text-red-600" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Clear Cart?</h3>
-              <p className="text-gray-600">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Clear Cart?</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Are you sure you want to remove all items from your cart? This action cannot be undone.
               </p>
             </div>
             <div className="flex gap-4">
               <button
                 onClick={() => setShowClearConfirm(false)}
-                className="flex-1 border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition"
+                className="flex-1 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-3 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-slate-700 transition"
               >
                 Cancel
               </button>
@@ -693,7 +693,7 @@ export default function CartPage() {
         </div>
       )}
       {/* Newsletter */}
-      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-amber-50">
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-amber-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto bg-gradient-to-br from-white to-blue-50/50 rounded-2xl md:rounded-3xl shadow-2xl p-6 md:p-10 lg:p-12 text-center border-2 border-amber-200/50 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-amber-200 rounded-full blur-3xl opacity-20"></div>
@@ -716,7 +716,7 @@ export default function CartPage() {
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}
                   disabled={isSubmittingNewsletter}
-                  className="flex-1 px-5 md:px-6 py-3 md:py-4 border-2 border-blue-200 rounded-lg md:rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition shadow-sm text-sm disabled:opacity-50"
+                  className="flex-1 px-5 md:px-6 py-3 md:py-4 border-2 border-blue-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg md:rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition shadow-sm text-sm disabled:opacity-50"
                   required
                 />
                 <button

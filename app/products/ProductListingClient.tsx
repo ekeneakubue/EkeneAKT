@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ShoppingCart, Search, Star, Filter, X, ChevronDown, ChevronRight, Home as HomeIcon, Building2, Lightbulb, Lamp, Zap, Grid3x3, List, SlidersHorizontal, LogIn, LogOut, User, Mail, Facebook, Instagram, Linkedin, MessageCircle, ShieldCheck, MapPin, Phone } from "lucide-react";
+import { ChevronRight, Lightbulb, List, SlidersHorizontal, Mail, MessageCircle, Search, Filter, X, Star, Grid3x3, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import Footer from "../../components/Footer";
+import Navbar from "../../components/Navbar";
 
 // Helper function to format numbers with commas
 const formatPrice = (amount: number): string => {
@@ -65,8 +66,8 @@ export default function ProductListingClient() {
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
-    const { addToCart, getTotalItems } = useCart();
-    const { isAuthenticated, user, signOut } = useAuth();
+    const { addToCart } = useCart();
+    const { isAuthenticated } = useAuth();
 
     // Newsletter state
     const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -258,88 +259,12 @@ export default function ProductListingClient() {
     });
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-300">
             {/* Header */}
-            <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-blue-100 shadow-lg">
-                <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-2.5 px-4 md:px-8 lg:px-12">
-                    <div className="container mx-auto px-4 md:px-6 lg:px-8 flex justify-between items-center text-sm">
-                        <Link href="/" className="flex items-center gap-2 hover:text-amber-300 transition">
-                            <span>← Back to Home</span>
-                        </Link>
-                        <div className="text-xs md:text-sm font-medium">
-                            Fast Shipping on all Orders!
-                        </div>
-                    </div>
-                </div>
-
-                <nav className="container mx-auto px-4 md:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <Link href="/" className="flex items-center gap-3">
-                            <div className="bg-amber-500 p-1.5 rounded-full">
-                                <img src="/images/logo.jpg" alt="logo" className="w-15 h-15 rounded-full" />
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">AKT</h1>
-                                <p className="text-xs font-semibold text-amber-600 tracking-wider">LIGHTING</p>
-                            </div>
-                        </Link>
-
-                        <div className="flex items-center gap-4">
-                            {isAuthenticated ? (
-                                <Link href="/cart" className="relative p-2 hover:bg-amber-50 rounded-lg transition group">
-                                    <ShoppingCart size={24} className="text-gray-700 group-hover:text-amber-600 transition" />
-                                    <span className="absolute -top-1 -right-1 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs rounded-full min-w-[20px] h-5 flex items-center justify-center font-bold shadow-lg px-1">
-                                        {getTotalItems()}
-                                    </span>
-                                </Link>
-                            ) : (
-                                <Link href="/signin" className="relative p-2 hover:bg-amber-50 rounded-lg transition group" title="Sign in to access cart">
-                                    <ShoppingCart size={24} className="text-gray-700 group-hover:text-amber-600 transition" />
-                                    <span className="absolute -top-1 -right-1 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs rounded-full min-w-[20px] h-5 flex items-center justify-center font-bold shadow-lg px-1">
-                                        {getTotalItems()}
-                                    </span>
-                                </Link>
-                            )}
-
-                            {isAuthenticated ? (
-                                <div className="hidden md:flex items-center gap-3">
-                                    <Link
-                                        href="/dashboard"
-                                        className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold transition hover:bg-blue-50 rounded-lg"
-                                        title="Go to Dashboard"
-                                    >
-                                        <Grid3x3 size={18} />
-                                        <span>Dashboard</span>
-                                    </Link>
-                                    <div className="flex items-center gap-2 text-sm text-gray-700 cursor-default">
-                                        <User size={18} className="text-blue-600" />
-                                        <span className="font-semibold">{user?.name}</span>
-                                    </div>
-                                    <button
-                                        onClick={signOut}
-                                        className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-red-600 font-semibold transition hover:bg-red-50 rounded-lg"
-                                        title="Sign out"
-                                    >
-                                        <LogOut size={18} />
-                                        <span>Sign Out</span>
-                                    </button>
-                                </div>
-                            ) : (
-                                <Link
-                                    href="/signin"
-                                    className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg font-semibold hover:from-amber-500 hover:to-amber-600 transition-all duration-300 shadow-lg hover:shadow-xl"
-                                >
-                                    <LogIn size={18} />
-                                    <span>Sign In</span>
-                                </Link>
-                            )}
-                        </div>
-                    </div>
-                </nav>
-            </header>
+            <Navbar />
 
             {/* Page Header */}
-            <section className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-8 md:py-10 lg:py-12 px-4 md:px-8 lg:px-12">
+            <section className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-white py-8 md:py-10 lg:py-12 px-4 md:px-8 lg:px-12">
                 <div className="container mx-auto px-4 md:px-6 lg:px-8">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Products</h1>
                     <p className="text-xl text-blue-200">Discover premium lighting solutions for every space</p>
@@ -352,10 +277,10 @@ export default function ProductListingClient() {
                     <aside className="hidden lg:block w-80 flex-shrink-0">
                         <div className="sticky top-32 space-y-6">
                             {/* Search */}
-                            <div className="bg-white rounded-xl md:rounded-2xl shadow-lg p-4 md:p-5 lg:p-6 border-2 border-blue-100">
-                                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <div className="bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl shadow-lg p-4 md:p-5 lg:p-6 border-2 border-blue-100 dark:border-slate-700">
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                     <Search size={20} className="text-amber-600" />
-                                    Search Products
+                                    Search Products (Dark Mode)
                                 </h3>
                                 <div className="relative">
                                     <input
@@ -363,7 +288,7 @@ export default function ProductListingClient() {
                                         placeholder="Search..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
+                                        className="w-full px-4 py-3 border-2 border-blue-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
                                     />
                                     {searchQuery && (
                                         <button
@@ -376,9 +301,10 @@ export default function ProductListingClient() {
                                 </div>
                             </div>
 
+
                             {/* Categories */}
-                            <div className="bg-white rounded-xl md:rounded-2xl shadow-lg p-4 md:p-5 lg:p-6 border-2 border-blue-100">
-                                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <div className="bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl shadow-lg p-4 md:p-5 lg:p-6 border-2 border-blue-100 dark:border-slate-700">
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                     <Filter size={20} className="text-amber-600" />
                                     Categories
                                 </h3>
@@ -388,7 +314,7 @@ export default function ProductListingClient() {
                                         onClick={() => setSelectedCategory("all")}
                                         className={`w-full flex items-center justify-between p-2 rounded-xl transition-all ${selectedCategory === "all"
                                             ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg"
-                                            : "hover:bg-blue-50 text-gray-700"
+                                            : "hover:bg-blue-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300"
                                             }`}
                                     >
                                         <div className="flex items-center gap-2">
@@ -405,7 +331,7 @@ export default function ProductListingClient() {
 
                                     {/* Category Structure from Database */}
                                     {categoryStructure.map((category: any) => (
-                                        <div key={category.id} className="border-b border-gray-100 last:border-b-0">
+                                        <div key={category.id} className="border-b border-gray-100 dark:border-slate-700 last:border-b-0">
                                             <button
                                                 onClick={() => {
                                                     if (category.subcategories.length > 0) {
@@ -416,7 +342,7 @@ export default function ProductListingClient() {
                                                 }}
                                                 className={`w-full flex items-center justify-between p-2 rounded-xl transition-all ${selectedCategory === category.name
                                                     ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg"
-                                                    : "hover:bg-blue-50 text-gray-700"
+                                                    : "hover:bg-blue-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300"
                                                     }`}
                                             >
                                                 <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -446,7 +372,7 @@ export default function ProductListingClient() {
                                                             onClick={() => setSelectedCategory(subcategory.name)}
                                                             className={`w-full flex items-center justify-between p-2 rounded-lg transition-all text-xs ${selectedCategory === subcategory.name
                                                                 ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-md"
-                                                                : "hover:bg-amber-50 text-gray-600"
+                                                                : "hover:bg-amber-50 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-400"
                                                                 }`}
                                                         >
                                                             <span className="font-medium whitespace-nowrap overflow-hidden text-ellipsis mr-2">{subcategory.name}</span>
@@ -468,8 +394,8 @@ export default function ProductListingClient() {
                             </div>
 
                             {/* Price Range */}
-                            <div className="bg-white rounded-xl md:rounded-2xl shadow-lg p-4 md:p-5 lg:p-6 border-2 border-blue-100">
-                                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <div className="bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl shadow-lg p-4 md:p-5 lg:p-6 border-2 border-blue-100 dark:border-slate-700">
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                     <SlidersHorizontal size={20} className="text-amber-600" />
                                     Price Range
                                 </h3>
@@ -480,7 +406,7 @@ export default function ProductListingClient() {
                                             onClick={() => setSelectedPriceRange(range.id)}
                                             className={`w-full text-left p-3 rounded-xl transition-all ${selectedPriceRange === range.id
                                                 ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg font-semibold"
-                                                : "hover:bg-amber-50 text-gray-700"
+                                                : "hover:bg-amber-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300"
                                                 }`}
                                         >
                                             {range.label}
@@ -504,6 +430,7 @@ export default function ProductListingClient() {
                             )}
                         </div>
                     </aside>
+
 
                     {/* Mobile Filter Button */}
                     <div className="lg:hidden">
@@ -687,10 +614,10 @@ export default function ProductListingClient() {
                     {/* Main Content */}
                     <main className="flex-1">
                         {/* Toolbar */}
-                        <div className="bg-white rounded-xl md:rounded-2xl shadow-lg p-3 md:p-4 mb-4 md:mb-6 border-2 border-blue-100">
+                        <div className="bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl shadow-lg p-3 md:p-4 mb-4 md:mb-6 border-2 border-blue-100 dark:border-slate-700">
                             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                                <div className="text-gray-700">
-                                    <span className="font-bold text-blue-800">{sortedProducts.length}</span> products found
+                                <div className="text-gray-700 dark:text-gray-300">
+                                    <span className="font-bold text-blue-800 dark:text-blue-400">{sortedProducts.length}</span> products found
                                 </div>
 
                                 <div className="flex items-center gap-4">
@@ -720,7 +647,7 @@ export default function ProductListingClient() {
                                     <select
                                         value={sortBy}
                                         onChange={(e) => setSortBy(e.target.value)}
-                                        className="px-4 py-2 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 font-semibold text-gray-700 cursor-pointer"
+                                        className="px-4 py-2 border-2 border-blue-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 font-semibold text-gray-700 cursor-pointer"
                                     >
                                         <option value="featured">Featured</option>
                                         <option value="popular">Most Popular</option>
@@ -772,7 +699,7 @@ export default function ProductListingClient() {
                                 {sortedProducts.map((product: any) => (
                                     <div
                                         key={product.id}
-                                        className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-amber-300"
+                                        className="group bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-amber-300 dark:border-slate-700"
                                     >
                                         <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-amber-50 aspect-square flex items-center justify-center overflow-hidden">
                                             <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-amber-400/10 group-hover:scale-110 transition-transform duration-500"></div>
@@ -792,8 +719,8 @@ export default function ProductListingClient() {
                                                 />
                                             )}
                                         </div>
-                                        <div className="p-6 bg-gradient-to-br from-white to-blue-50/30">
-                                            <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-blue-800 transition">
+                                        <div className="p-6 bg-gradient-to-br from-white to-blue-50/30 dark:from-slate-800 dark:to-slate-900">
+                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-800 dark:group-hover:text-blue-400 transition">
                                                 {product.name}
                                             </h3>
                                             <div className="flex items-center gap-2 mb-4">
@@ -809,7 +736,7 @@ export default function ProductListingClient() {
                                                 <span className="text-sm text-gray-500">({product.reviews})</span>
                                             </div>
                                             <div className="flex items-center justify-between gap-4">
-                                                <div className="text-lg font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
+                                                <div className="text-lg font-bold bg-gradient-to-r from-blue-700 to-blue-900 dark:from-blue-400 dark:to-blue-600 bg-clip-text text-transparent">
                                                     ₦{formatPrice(product.price * 1.075 + (product.profit || 0))}
                                                 </div>
                                                 <button
@@ -900,11 +827,11 @@ export default function ProductListingClient() {
                             </div>
                         )}
                     </main>
-                </div>
-            </div>
+                </div >
+            </div >
 
             {/* Newsletter */}
-            <section className="py-12 md:py-16 lg:py-20 px-4 md:px-8 lg:px-12 bg-gradient-to-br from-slate-50 via-blue-50 to-amber-50">
+            < section className="py-12 md:py-16 lg:py-20 px-4 md:px-8 lg:px-12 bg-gradient-to-br from-slate-50 via-blue-50 to-amber-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-300" >
                 <div className="container mx-auto px-4 md:px-6 lg:px-8">
                     <div className="max-w-4xl mx-auto bg-gradient-to-br from-white to-blue-50/50 rounded-2xl md:rounded-3xl shadow-2xl p-6 md:p-10 lg:p-12 text-center border-2 border-amber-200/50 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-amber-200 rounded-full blur-3xl opacity-20"></div>
@@ -951,7 +878,7 @@ export default function ProductListingClient() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* Footer */}
             {/* Footer */}
@@ -975,24 +902,26 @@ export default function ProductListingClient() {
             </a>
 
             {/* Toast Notification */}
-            {showToast && (
-                <div className="fixed bottom-24 right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">
-                    <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px] max-w-md border-2 border-blue-400">
-                        <div className="bg-white/20 rounded-full p-1.5">
-                            <ShoppingCart size={20} />
+            {
+                showToast && (
+                    <div className="fixed bottom-24 right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">
+                        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px] max-w-md border-2 border-blue-400">
+                            <div className="bg-white/20 rounded-full p-1.5">
+                                <ShoppingCart size={20} />
+                            </div>
+                            <div className="flex-1">
+                                <p className="font-bold">{toastMessage}</p>
+                            </div>
+                            <button
+                                onClick={() => setShowToast(false)}
+                                className="text-white hover:text-blue-100 transition p-1"
+                            >
+                                <X size={18} />
+                            </button>
                         </div>
-                        <div className="flex-1">
-                            <p className="font-bold">{toastMessage}</p>
-                        </div>
-                        <button
-                            onClick={() => setShowToast(false)}
-                            className="text-white hover:text-blue-100 transition p-1"
-                        >
-                            <X size={18} />
-                        </button>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }

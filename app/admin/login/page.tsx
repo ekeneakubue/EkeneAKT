@@ -45,36 +45,36 @@ export default function AdminLoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-gray-100 dark:bg-slate-950 flex items-center justify-center px-4 transition-colors duration-300">
             <div className="max-w-md w-full">
                 <Link
                     href="/"
-                    className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-8 transition"
+                    className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mb-8 transition"
                 >
                     <ArrowLeft size={18} />
                     <span>Back to Store</span>
                 </Link>
 
-                <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-slate-800">
                     <div className="text-center mb-8">
-                        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/40 rounded-full mb-4">
                             <ShieldCheck size={32} className="text-blue-700" />
                         </div>
-                        <h1 className="text-2xl font-bold text-gray-900">Admin Login</h1>
-                        <p className="text-sm text-gray-500 mt-2">
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Login</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                             Secure area. Authorized personnel only.
                         </p>
                     </div>
 
                     {error && (
-                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+                        <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-6 text-sm">
                             {error}
                         </div>
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Email Address
                             </label>
                             <div className="relative">
@@ -86,7 +86,7 @@ export default function AdminLoginPage() {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                                     placeholder="admin@example.com"
                                     required
                                 />
@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Password
                             </label>
                             <div className="relative">
@@ -106,7 +106,7 @@ export default function AdminLoginPage() {
                                     type={showPassword ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full pl-10 pr-12 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    className="w-full pl-10 pr-12 py-2.5 border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                                     placeholder="••••••••"
                                     required
                                 />

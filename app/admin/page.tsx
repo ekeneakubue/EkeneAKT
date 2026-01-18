@@ -251,13 +251,13 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       {/* Connection Error Banner */}
       {connectionError && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 rounded">
           <div className="flex">
             <div className="flex-shrink-0">
               <AlertCircle className="h-5 w-5 text-yellow-400" />
             </div>
             <div className="ml-3">
-              <p className="text-sm text-yellow-700">
+              <p className="text-sm text-yellow-700 dark:text-yellow-200">
                 <strong>Database Connection Issue:</strong> {connectionError}
               </p>
             </div>
@@ -266,9 +266,9 @@ export default function AdminDashboard() {
       )}
 
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-6 text-white shadow-lg">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-900 rounded-xl p-6 text-white shadow-lg">
         <h1 className="text-2xl font-bold mb-2">Welcome to Admin Dashboard</h1>
-        <p className="text-blue-100">Manage your store, products, orders, and customers from here.</p>
+        <p className="text-blue-100 dark:text-blue-200">Manage your store, products, orders, and customers from here.</p>
       </div>
 
       {/* Stats Cards */}
@@ -276,11 +276,11 @@ export default function AdminDashboard() {
         {statCards.map((card, index) => (
           <div
             key={index}
-            className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-100"
+            className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-100 dark:border-slate-800"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">{card.title}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{card.title}</p>
                 <p className={`text-2xl font-bold ${card.textColor}`}>{card.value}</p>
               </div>
               <div className={`${card.bgColor} p-3 rounded-lg`}>
@@ -293,17 +293,17 @@ export default function AdminDashboard() {
 
       {/* Order Status Cards */}
       <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Order Status Overview</h2>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Order Status Overview</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {orderStatusCards.map((card, index) => (
             <div
               key={index}
-              className={`${card.bgColor} rounded-lg p-4 border-2 border-transparent hover:border-gray-200 transition`}
+              className={`${card.bgColor} dark:bg-slate-900/50 rounded-lg p-4 border-2 border-transparent hover:border-gray-200 dark:hover:border-slate-700 transition`}
             >
               <div className="flex items-center gap-3">
                 <card.icon className={card.color} size={24} />
                 <div>
-                  <p className="text-sm font-medium text-gray-600">{card.title}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{card.title}</p>
                   <p className={`text-xl font-bold ${card.color}`}>{card.value}</p>
                 </div>
               </div>
@@ -315,9 +315,9 @@ export default function AdminDashboard() {
       {/* Recent Orders and Low Stock Products */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
-        <div className="bg-white rounded-xl shadow-md border border-gray-100">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900">Recent Orders</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-gray-100 dark:border-slate-800">
+          <div className="p-6 border-b border-gray-200 dark:border-slate-800">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Recent Orders</h2>
           </div>
           <div className="p-6">
             {stats?.recentOrders && stats.recentOrders.length > 0 ? (
@@ -325,14 +325,14 @@ export default function AdminDashboard() {
                 {stats.recentOrders.slice(0, 5).map((order: any) => (
                   <div
                     key={order.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+                    className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition"
                   >
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900">Order #{order.id.slice(0, 8)}</p>
-                      <p className="text-sm text-gray-600">{formatDate(order.createdAt)}</p>
+                      <p className="font-semibold text-gray-900 dark:text-white">Order #{order.id.slice(0, 8)}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{formatDate(order.createdAt)}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-gray-900">{formatPrice(order.total)}</p>
+                      <p className="font-bold text-gray-900 dark:text-white">{formatPrice(order.total)}</p>
                       <span
                         className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${order.status === "pending"
                           ? "bg-yellow-100 text-yellow-800"
@@ -352,15 +352,15 @@ export default function AdminDashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-8">No recent orders</p>
+              <p className="text-gray-500 dark:text-gray-400 text-center py-8">No recent orders</p>
             )}
           </div>
         </div>
 
         {/* Low Stock Products */}
-        <div className="bg-white rounded-xl shadow-md border border-gray-100">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900">Low Stock Products</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-gray-100 dark:border-slate-800">
+          <div className="p-6 border-b border-gray-200 dark:border-slate-800">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Low Stock Products</h2>
           </div>
           <div className="p-6">
             {stats?.lowStockProducts && stats.lowStockProducts.length > 0 ? (
@@ -368,7 +368,7 @@ export default function AdminDashboard() {
                 {stats.lowStockProducts.slice(0, 5).map((product: any) => (
                   <div
                     key={product.id}
-                    className="flex items-center gap-4 p-4 bg-red-50 rounded-lg hover:bg-red-100 transition"
+                    className="flex items-center gap-4 p-4 bg-red-50 dark:bg-red-900/10 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/20 transition"
                   >
                     {product.image && (
                       <img
@@ -378,8 +378,8 @@ export default function AdminDashboard() {
                       />
                     )}
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900">{product.name}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="font-semibold text-gray-900 dark:text-white">{product.name}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                         Stock: {product.stockCount || 0} units
                       </p>
                     </div>
@@ -388,7 +388,7 @@ export default function AdminDashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-8">All products are well stocked</p>
+              <p className="text-gray-500 dark:text-gray-400 text-center py-8">All products are well stocked</p>
             )}
           </div>
         </div>
