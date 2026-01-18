@@ -320,8 +320,7 @@ export default function HomeClient() {
                                     value={newsletterEmail}
                                     onChange={(e) => setNewsletterEmail(e.target.value)}
                                     disabled={isSubmittingNewsletter}
-                                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                                    disabled={isSubmittingNewsletter}
+
                                     className="flex-1 px-5 md:px-6 py-3 md:py-4 border-2 border-blue-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg md:rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition shadow-sm text-sm md:text-base disabled:opacity-50"
                                     required
                                 />
